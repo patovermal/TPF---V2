@@ -56,7 +56,8 @@ size_t split_delim (char * cadena, char ** ptr2ptrarray, char delim) {
 */
 
 status_t proc_zda(nmea_t* nmea, char* cadena){
-
+	
+	FILE *flogs;
 	char* cad_arr[NMEA_DELIM_CANT_MAX];
 	char * temp;
 
@@ -64,42 +65,56 @@ status_t proc_zda(nmea_t* nmea, char* cadena){
 		return ST_ERR_PUNT_NULL;
 
     /* split devuelve la cant de cadenas que separo. Si ese numero es menor a NMEA_DELIM_CANT_MIN, se descarta el dato*/
-	if ( split_delim( cadena , cad_arr , NMEA_DELIM_CHAR ) < NMEA_DELIM_CANT_MIN )
+	if ( split_delim( cadena , cad_arr , NMEA_DELIM_CHAR ) < NMEA_DELIM_CANT_MIN ) {
+		print_logs(ERR_INV_NMEA, flogs);
 		return ST_ERR_SENTENCIA_INVALIDA;
+	}
 	
 	/* convierto de cadena "hhmmss.ss" al tipo hora_t (struct hora) con la función str2hora (fecha.h) */
-	if ( str2hora( cad_arr[NMEA_ZDA_HORA_POS] , &nmea->type.zda.hora ) != ST_OK )
+	if ( str2hora( cad_arr[NMEA_ZDA_HORA_POS] , &nmea->type.zda.hora ) != ST_OK ) {
+		print_logs(ERR_INV_NMEA, flogs);
 		return ST_ERR_SENTENCIA_INVALIDA;
+	}
 
 	/* verifico que el dia sea un numero y lo cargo en la estructura */
 	nmea->type.zda.fecha.day = strtoul(cad_arr[NMEA_ZDA_DIA_POS], &temp, 10);
 	
-	if ( *temp != '\0' )
+	if ( *temp != '\0' ) {
+		print_logs(ERR_INV_NMEA, flogs);
 		return ST_ERR_SENTENCIA_INVALIDA;
+	}
 
 	/* idem anterior para el mes */
 	nmea->type.zda.fecha.month = strtoul(cad_arr[NMEA_ZDA_MES_POS], &temp, 10);
 	
-	if ( *temp != '\0' )
+	if ( *temp != '\0' ) {
+		print_logs(ERR_INV_NMEA, flogs);
 		return ST_ERR_SENTENCIA_INVALIDA;
+	}
 
 	/* idem anterior para el año */
 	nmea->type.zda.fecha.year = strtoul(cad_arr[NMEA_ZDA_ANIO_POS], &temp, 10);
 	
-	if ( *temp != '\0' )
+	if ( *temp != '\0' ) {
+		print_logs(ERR_INV_NMEA, flogs);
 		return ST_ERR_SENTENCIA_INVALIDA;
+	}
 
 	/* verifico que zona horaria sea un numero y lo cargo en la estructura */
 	nmea->type.zda.hh_utc = strtol(cad_arr[NMEA_ZDA_HHUTC_POS], &temp, 10);
 	
-	if ( *temp != '\0' )
+	if ( *temp != '\0' ) {
+		print_logs(ERR_INV_NMEA, flogs);
 		return ST_ERR_SENTENCIA_INVALIDA;
+	}
 
 	/* idem anterior pero para los minutos de diferencia */
 	nmea->type.zda.mm_utc = strtol(cad_arr[NMEA_ZDA_HHUTC_POS], &temp, 10);
 	
-	if ( *temp != '\0' )
+	if ( *temp != '\0' ) {
+		print_logs(ERR_INV_NMEA, flogs);
 		return ST_ERR_SENTENCIA_INVALIDA;
+	}
 	
 	return ST_OK;
 
@@ -114,6 +129,7 @@ status_t proc_zda(nmea_t* nmea, char* cadena){
 
 status_t proc_rmc(nmea_t* nmea, char* cadena){
 	
+	FILE *flogs;
 	char* cad_arr[NMEA_DELIM_CANT_MAX];
 	status_t st;
 	char* ctemp;
@@ -121,11 +137,15 @@ status_t proc_rmc(nmea_t* nmea, char* cadena){
 	if ( !cadena || !nmea )
 		return ST_ERR_PUNT_NULL;
 	
-	if ( split_delim( cadena , cad_arr , NMEA_DELIM_CHAR ) < NMEA_DELIM_CANT_MIN )
+	if ( split_delim( cadena , cad_arr , NMEA_DELIM_CHAR ) < NMEA_DELIM_CANT_MIN ) {
+		print_logs(ERR_INV_NMEA, flogs);
 		return ST_ERR_SENTENCIA_INVALIDA;
+	}
 
-	if ( ( st = str2hora( cad_arr[NMEA_RMC_HORA_POS] , &nmea->type.rmc.hora ) ) != ST_OK )
+	if ( ( st = str2hora( cad_arr[NMEA_RMC_HORA_POS] , &nmea->type.rmc.hora ) ) != ST_OK ) {
+		print_logs(ERR_INV_NMEA, flogs);
 		return st;
+	}
 
 
 	/* 	if ( strcmp( cad_arr[NMEA_RMC_ST_POS] , STR_RMC_ACTIVE ) == 0 )
@@ -133,29 +153,41 @@ status_t proc_rmc(nmea_t* nmea, char* cadena){
 	else 
 		return ST_ERR_FIX_INVALIDA; */
 
-	if ( ( st = str2lat( cad_arr[NMEA_RMC_LAT_POS], cad_arr[NMEA_RMC_LAT_POS + 1] , &nmea->type.rmc.latitud ) ) != ST_OK )
+	if ( ( st = str2lat( cad_arr[NMEA_RMC_LAT_POS], cad_arr[NMEA_RMC_LAT_POS + 1] , &nmea->type.rmc.latitud ) ) != ST_OK ) {
+		print_logs(ERR_INV_NMEA, flogs);
 		return st;
+	}
 
-	if ( ( st = str2lon( cad_arr[NMEA_RMC_LON_POS], cad_arr[NMEA_RMC_LON_POS + 1] , &nmea->type.rmc.longitud ) ) != ST_OK )
+	if ( ( st = str2lon( cad_arr[NMEA_RMC_LON_POS], cad_arr[NMEA_RMC_LON_POS + 1] , &nmea->type.rmc.longitud ) ) != ST_OK ) {
+		print_logs(ERR_INV_NMEA, flogs);
 		return st;
+	}
 
 	nmea->type.rmc.velocidad = strtod( cad_arr[NMEA_RMC_VEL_POS] , &ctemp );
 	
-	if ( *ctemp != '\0' )
+	if ( *ctemp != '\0' ) {
+		print_logs(ERR_INV_NMEA, flogs);
 		return ST_ERR_SENTENCIA_INVALIDA;
+	}
 	
 	nmea->type.rmc.ang_seg = strtod( cad_arr[NMEA_RMC_ANG_POS] , &ctemp );
 	
-	if ( *ctemp != '\0' )
+	if ( *ctemp != '\0' ) {
+		print_logs(ERR_INV_NMEA, flogs);
 		return ST_ERR_SENTENCIA_INVALIDA;
+	}
 	
-	if ( ( st = str2fecha( cad_arr[NMEA_RMC_FECHA_POS] , &nmea->type.rmc.fecha ) ) != ST_OK )
+	if ( ( st = str2fecha( cad_arr[NMEA_RMC_FECHA_POS] , &nmea->type.rmc.fecha ) ) != ST_OK ) {
+		print_logs(ERR_INV_NMEA, flogs);
 		return st;
-	
+	}
+		
 	nmea->type.rmc.desv_mag = strtod( cad_arr[NMEA_RMC_DESV_POS] , &ctemp );
 	
-	if ( *ctemp != '\0' )
+	if ( *ctemp != '\0' ) {
+		print_logs(ERR_INV_NMEA, flogs);
 		return ST_ERR_SENTENCIA_INVALIDA;
+	}
 	
 	return ST_OK;
 	
@@ -178,16 +210,22 @@ status_t proc_gga(nmea_t* nmea, char* cadena){
 		return ST_ERR_PUNT_NULL;
 	
 	if ( split_delim( cadena , cad_arr , NMEA_DELIM_CHAR ) < NMEA_DELIM_CANT_MIN ){
+		print_logs(ERR_INV_NMEA, flogs);
 		return ST_ERR_SENTENCIA_INVALIDA;
 	}
 	
 	if ( ( st = str2hora( cad_arr[NMEA_GGA_HORA_POS] , &nmea->type.gga.hora ) ) != ST_OK ){
+		print_logs(ERR_INV_NMEA, flogs);
 		return st;
 	}
+	
 	if ( ( st = str2lat( cad_arr[NMEA_GGA_LAT_POS], cad_arr[NMEA_GGA_LAT_POS + 1] , &nmea->type.gga.latitud ) ) != ST_OK ){
+		print_logs(ERR_INV_NMEA, flogs);
 		return st;
 	}
+	
 	if ( ( st = str2lon( cad_arr[NMEA_GGA_LON_POS], cad_arr[NMEA_GGA_LON_POS + 1] , &nmea->type.gga.longitud ) ) != ST_OK ){
+		print_logs(ERR_INV_NMEA, flogs);
 		return st;
 	}
 	
@@ -263,7 +301,7 @@ bool verify_checksum ( char* str_origen ){
 
 	temp = strchr(str_origen,NMEA_TOKEN_CHKSUM);
 	
-	if (!temp)
+	if (!temp) 
 		return false;
 	
 	*temp = '\0';
@@ -278,7 +316,7 @@ bool verify_checksum ( char* str_origen ){
 	
 	if (char_temp == num_temp)
 		return true;
-
+	
 	return false;
 
 }
@@ -299,10 +337,12 @@ status_t proc_nmea( char* cadena , nmea_t * nmea ){
 		return ST_ERR_PUNT_NULL;
 
 	if ( verify_checksum( cadena ) == false ){
+		print_logs(ERR_INV_CHKSUM, flogs);
 		return ST_ERR_SENTENCIA_INVALIDA;
 	}
 
 	if ( ( st = get_nmea_id( cadena , &(nmea->id) ) ) != ST_OK ){
+		print_logs(WARN_ID_DESC, flogs);
 		return st;
 	}
 
@@ -394,16 +434,17 @@ status_t get_nmea_id ( const char *cadena , nmea_id* id ) {
 	if ( strncmp ( ptr2delim-NMEA_ID_LEN , NMEA_GGA_STR , NMEA_ID_LEN) == 0) {
 		*id = GGA;
 		return ST_OK;
-	}
-	if ( strncmp ( ptr2delim-NMEA_ID_LEN , NMEA_RMC_STR , NMEA_ID_LEN) == 0) {
-		*id = RMC;
-		return ST_OK;
-	}
-	if ( strncmp ( ptr2delim-NMEA_ID_LEN , NMEA_ZDA_STR , NMEA_ID_LEN) == 0) {
-		*id = ZDA;
-		return ST_OK;
-	}
+	} else {
+		if ( strncmp ( ptr2delim-NMEA_ID_LEN , NMEA_RMC_STR , NMEA_ID_LEN) == 0) {
+			*id = RMC;
+			return ST_OK;
+		} else {
+			if ( strncmp ( ptr2delim-NMEA_ID_LEN , NMEA_ZDA_STR , NMEA_ID_LEN) == 0) {
+					*id = ZDA;
+					return ST_OK;
+			} else {
 	
-	return ST_ERR_ID_INVALIDO;
+				return ST_ERR_ID_INVALIDO;
+			}
 
 }
