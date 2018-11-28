@@ -3,13 +3,6 @@
 
 #include <stdio.h>
 
-/* mensajes de errores */
-#define TXT_ST_OK					"Correcto."
-#define TXT_ST_ERR_DATO_INCOMP		"Dato incompleto."
-#define TXT_ST_ERR_PUNT_NULL		"Puntero nulo."
-#define TXT_ST_ERR_FECHA_INVALIDA 	"Fecha ingresa inválida."
-#define TXT_ST_ERR_FIX_INVALIDO		"Fix inválido. Se ignora."
-
 typedef enum status_t{ 
 			ST_OK, 
 			ST_ERR_DATO_INCOMP, 
