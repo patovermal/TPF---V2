@@ -1,7 +1,20 @@
+/**
+* @file logs.h
+* @author pulpo
+* @date 24/11/2018
+* @brief Funciones que operan con bits.
+*/
+
 #include <math.h>
 #include "bits.h"
 
-/*convierte de little-endian a entero sin signo*/
+/**
+* @brief Convierte de little-endian a entero sin signo.
+* @param string
+* @param pos
+* @param len
+* @return ulong : Un entero sin signo
+*/
 ulong letol(const uchar *string, size_t pos, size_t len){
 	ulong entero = 0;
 	int i;
@@ -12,7 +25,14 @@ ulong letol(const uchar *string, size_t pos, size_t len){
 	return entero;
 }
 
-/*convierte de little-endian a entero con signo*/
+
+/**
+* @brief Convierte de little-endian a entero con signo.
+* @param string
+* @param pos
+* @param len
+* @return ulong : Un entero con signo
+*/
 long sletol(const uchar *string, size_t pos, size_t len){
 	long entero = 0,
 		 signo;
@@ -35,6 +55,12 @@ long sletol(const uchar *string, size_t pos, size_t len){
 
 	return signo*entero;
 }
+
+/**
+* @brief Convierte un decimal expresado en Estándar IEEE 754 a float.
+* @param entero : Un numero en decimal expresado según el estándar IEEE.
+* @return Un double.
+*/
 
 /* convierte un decimal expresado en Estándar IEEE 754 a float */
 double lotof(ulong entero){
