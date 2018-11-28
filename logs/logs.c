@@ -8,14 +8,14 @@
 
 #include "logs.h"
 
-status_t print_logs (log_t logs, FILE *flogs) {
+void print_logs (log_t logs, FILE *flogs) {
     
     time_t now;     
     time(&now);     
     char * date =ctime(&now);
     
     if (!flogs)
-        return ST_ERR_PUNT_NULL;
+        return;
     
 	date[strlen(date) - 1] = '\0';
 	fprintf(flogs, "%s - " , date);
@@ -76,5 +76,4 @@ status_t print_logs (log_t logs, FILE *flogs) {
             fprintf(flogs, "%s: %s\n", MSJ_DEBUG_PREFIJO, MSJ_DB_MSJ_PRINT);
             break;
     }
-    return ST_OK;
 }
