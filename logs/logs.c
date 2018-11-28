@@ -8,6 +8,13 @@
 
 #include "logs.h"
 
+/**
+* @brief Imprime mensajes de incidentes en el programa.
+* @param logs : el tipo de incidente.
+* @param flogs : indica donde se guardarán los mensajes.
+* @return Void : no devuelve nada. 
+*/
+
 void print_logs (log_t logs, FILE *flogs) {
     
     time_t now;     
