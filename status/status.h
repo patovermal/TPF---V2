@@ -30,6 +30,4 @@ typedef enum status_t{
 			ST_ERR_ID_INVALIDO,
 }status_t;
 
-void print_log ( FILE* flog, status_t st );
-
 #endif
