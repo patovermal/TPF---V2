@@ -20,6 +20,7 @@
 #include "../files/files.h"
 #include "../list/list.h"
 #include "../split/split.h"
+#include "../logs/logs.h"
 
 #define NMEA_TOKEN_CHKSUM '*'
 
@@ -159,7 +160,7 @@ status_t get_nmea_id ( const char *cadena , nmea_id* id );
 status_t proc_zda( nmea_t* nmea, char* cadena );
 status_t proc_rmc( nmea_t* nmea, char* cadena );
 status_t proc_gga( nmea_t* nmea, char* cadena );
-status_t proc_nmea( char* cadena , nmea_t* nmea );
+status_t proc_nmea( char* cadena , nmea_t* nmea , FILE* flog );
 bool verify_checksum ( char* );
 status_t rmc2gpx( nmea_t* nmea , gpx_t* gpx);
 status_t zda2gpx( nmea_t* nmea , gpx_t* gpx);

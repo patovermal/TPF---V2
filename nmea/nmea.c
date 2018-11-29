@@ -90,7 +90,7 @@ status_t proc_rmc(nmea_t* nmea, char* cadena){
 	/* 	if ( strcmp( cad_arr[NMEA_RMC_ST_POS] , STR_RMC_ACTIVE ) == 0 )
 		nmea->type.rmc.status = true;
 	else 
-		return ST_ERR_FIX_INVALIDA; */
+		return ST_ERR_SENTENCIA_INVALIDA; */
 
 	if ( ( st = str2lat( cad_arr[NMEA_RMC_LAT_POS], cad_arr[NMEA_RMC_LAT_POS + 1] , &nmea->type.rmc.latitud ) ) != ST_OK )
 		return st;
@@ -153,19 +153,19 @@ status_t proc_gga(nmea_t* nmea, char* cadena){
 /* 	nmea->type.gga.calidad = strtoul( cad_arr[NMEA_GGA_CAL_POS] , &ctemp, 10 );
 
 	if ( *ctemp != '\0' ){
-		return ST_ERR_FIX_INVALIDO;
+		return ST_ERR_SENTENCIA_INVALIDA;
 	}
-	if ( nmea->type.gga.calidad < 1  || nmea->type.gga.calidad > MAX_CALIDAD ){
-		return ST_ERR_FIX_INVALIDO;
+	if ( nmea->type.gga.calidad < 0  || nmea->type.gga.calidad > MAX_CALIDAD ){
+		return ST_ERR_SENTENCIA_INVALIDA;
 	}
 	
 	nmea->type.gga.cant_satelites = strtoul( cad_arr[NMEA_GGA_SAT_POS] , &ctemp, 10 );
 
 	if ( *ctemp != '\0' )
-		return ST_ERR_FIX_INVALIDO;
+		return ST_ERR_SENTENCIA_INVALIDA;
 
 	if ( nmea->type.gga.cant_satelites < 0  || nmea->type.gga.cant_satelites > MAX_SATELITES )
-		return ST_ERR_FIX_INVALIDO;
+		return ST_ERR_SENTENCIA_INVALIDA;
 	
 	nmea->type.gga.hdop = strtod( cad_arr[NMEA_GGA_HDOP_POS] , &ctemp );
 	
@@ -249,7 +249,7 @@ bool verify_checksum ( char* str_origen ){
 * @return status_t : el estado en el que termino (ST_OK si todo fue bien)
 */
 
-status_t proc_nmea( char* cadena , nmea_t * nmea ){
+status_t proc_nmea( char* cadena , nmea_t * nmea , FILE* flogs){
 	
 	status_t st;
 	status_t (*pfunc[ NMEA_CANT_TIPOS ])( nmea_t* , char* ) = { proc_rmc,  proc_zda,  proc_gga }; /*Puntero a funciones*/
@@ -258,17 +258,22 @@ status_t proc_nmea( char* cadena , nmea_t * nmea ){
 		return ST_ERR_PUNT_NULL;
 
 	if ( verify_checksum( cadena ) == false ){
+		print_logs(ERR_INV_CHKSUM, flogs);
 		return ST_ERR_SENTENCIA_INVALIDA;
 	}
 
 	if ( ( st = get_nmea_id( cadena , &(nmea->id) ) ) != ST_OK ){
+		print_logs(WARN_ID_DESC, flogs);
 		return st;
 	}
-
+	
+	print_logs( DB_ID_DETECT , flogs);
+	
 	if ( ( st = (*pfunc[ nmea->id ])( nmea , cadena ) ) != ST_OK ){
+		print_logs(ERR_INV_NMEA, flogs);
 		return st;
 	}
-
+	
 	return ST_OK;
 	
 }
@@ -385,11 +390,13 @@ status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
 	fecha_t fecha_cur;
 	hora_t hora_cur;
 	
-	if ( get_currentdate( &fecha_cur , &hora_cur ) != ST_OK )
-		return ST_ERR_PUNT_NULL;
+	if ( st = get_currentdate( &fecha_cur , &hora_cur ) != ST_OK ){
+		print_logs( ERR_GET_FECHA , files->flog );
+		return st;
+	}
 	
 	if ( ( st = Make_list( &lista , maxlen ) ) != ST_OK ){
-		print_log( files->flog , st );
+		print_logs( ERR_LIST_MAKE , files->flog );
 		return st;
 	}
 	
@@ -399,15 +406,17 @@ status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
 		return ST_ERR_PUNT_NULL;
 	
 	if (  !( nmea = (nmea_t*)calloc(1,sizeof(nmea_t)) ) ){
+		print_logs( ERR_NO_MEM, files->flog );
 		return ST_ERR_NOMEM;
 	}
 	
 	while ( fgets( str , NMEA_MAX_LEN , files->fin ) != NULL ){
 		
-		if ( ( st = proc_nmea( str , nmea ) )!= ST_OK ){
-			print_log( files->flog , st );
+		if ( ( st = proc_nmea( str , nmea , files->flog ) )!= ST_OK ){
 			continue;
 		}
+		
+		print_logs( DB_MSJ_DET , files->flog );
 		
 		switch ( nmea->id ){
 			case ZDA:
@@ -433,7 +442,7 @@ status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
 		if ( ( st = (*pfunc[ nmea->id ])( nmea , gpx ) ) != ST_OK ) {
 			free(gpx);
 			gpx = NULL;
-			print_log( files->flog , st);
+			print_logs( WARN_GPX_CONV , files->flog );
 			continue;
 		}
 		
@@ -445,15 +454,17 @@ status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
 			gpx = NULL;
 		}
 		
+		print_logs( DB_MSJ_UP , files->flog );
+		
 		if ( rand()%11 <= 7 ){
-			print_trkpt( PopL_list( &lista ) );
+			print_trkptGPX( PopL_list( &lista ) , files->fout );
 			Destroy_firstnode( &lista, &free );
 		}
 		
 	}
 	
 	while ( Cant_act_list( &lista ) ){
-		print_trkpt( PopL_list( &lista ) );
+		print_trkptGPX( PopL_list( &lista ) , files->fout );
 		Destroy_firstnode( &lista, &free );
 	}
 	
