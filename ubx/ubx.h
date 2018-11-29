@@ -1,6 +1,12 @@
 #ifndef UBX__H
 #define UBX__H
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 #include "fecha.h"
+#include "status.h"
+#include "bits.h"
 
 #define BUFFER_LEN 120 /*La longitúd del buffer debe ser mayor a la máxima longitud posible para una sentencia UBX*/
 
