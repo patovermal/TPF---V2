@@ -1,8 +1,17 @@
+/**
+* @file status.h
+* @author buyi97
+* @date 18/11/2019
+* @brief Definido el tipo status_t
+*/
+
 #ifndef STATUS__H
 #define STATUS__H
 
-#include <stdio.h>
-
+/**
+ * @enum status_t
+ * @brief Tipo de dato para los estados de las distintas funciones
+ */
 typedef enum status_t{ 
 			ST_OK, 
 			ST_ERR_DATO_INCOMP, 
