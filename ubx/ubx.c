@@ -5,12 +5,7 @@
 * @brief Funciones para UBX
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include "status.h"
 #include "ubx.h"
-#include "bits.h"
 
 int main (void){
 	uchar *sentencia;
