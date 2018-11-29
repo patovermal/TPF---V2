@@ -456,7 +456,7 @@ status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
 		
 		print_logs( DB_MSJ_UP , files->flog );
 		
-		if ( rand()%11 <= 7 ){
+		if ( rand()%10 <= 7 ){
 			print_trkptGPX( PopL_list( &lista ) , files->fout );
 			Destroy_firstnode( &lista, &free );
 		}
