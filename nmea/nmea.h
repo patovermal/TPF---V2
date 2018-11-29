@@ -19,6 +19,7 @@
 #include "../gpx/gpx.h"
 #include "../files/files.h"
 #include "../list/list.h"
+#include "../split/split.h"
 
 #define NMEA_TOKEN_CHKSUM '*'
 
