@@ -1,6 +1,8 @@
 #ifndef BIT_FX__H
 #define BIT_FX__H
 
+#include <math.h>
+
 /*máscaras y shifts*/
 #define LOTOF_MASK_SIGNO	0x80000000
 #define SHIFT_SIGNO			31
