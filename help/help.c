@@ -1,6 +1,6 @@
 /**
 * @file help.c
-* @Author patovermal
+* @author patovermal
 * @date 26/11/2019
 * @brief Impresion de la ayuda del programa
 */
@@ -8,7 +8,7 @@
 #include "help.h"
 
 /**
-* @brief Imprime la ayuda del programa
+* @brief Imprime la ayuda del programa por stdout
 * @param void: no recibe parámetros
 * @return void : no devuelve nada
 */
