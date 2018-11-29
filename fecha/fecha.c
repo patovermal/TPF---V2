@@ -1,23 +1,20 @@
 /**
 * @file fecha.c
-* @Author buyi97
+* @author buyi97
 * @date 18/11/2019
 * @brief Funciones para fecha_t y hora_t
 */
 
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
-#include "status.h"
 #include "fecha.h"
 
 /**
 * @brief Pasar de una cadena hhmmss.ss a hora_t
-* @param Cadena hhmmss.ss, puntero a estructura hora_t;
-* @return El estado en el que terminó la función (si fue todo bien ST_OK)
+* @param cadena : cadena hhmmss.ss
+* @param hora : puntero a hora_t
+* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
 */
 
-status_t str2hora(char* cadena, struct hora_t* hora){
+status_t str2hora(char* cadena, hora_t* hora){
 	
 	char* ctemp;				
 	double ntemp;
@@ -47,12 +44,13 @@ status_t str2hora(char* cadena, struct hora_t* hora){
 }
 
 /**
-* @brief Pasar de una cadena yyyymmdd a fecha_t
-* @param Cadena yyyymmdd, puntero a estructura fecha_t;
-* @return El estado en el que terminó la función (si fue todo bien ST_OK)
+* @brief Pasar de una cadena yyyymmdd a hora_t
+* @param cadfecha : cadena yyyymmdd
+* @param fecha : puntero a hora_t
+* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
 */
 
-status_t str2fecha(char* cadfecha, struct fecha_t * fecha){
+status_t str2fecha(char* cadfecha, fecha_t * fecha){
 
 	char* temp;
 	long int ntemp; 	/*numero temporario donde almaceno la fecha como 20180925 (ejemplo)*/
@@ -83,11 +81,12 @@ status_t str2fecha(char* cadfecha, struct fecha_t * fecha){
 
 /**
 * @brief Pone la fecha y hora actual en un fecha_t y hora_t
-* @param Puntero a fecha_t, puntero a hora_t;
-* @return El estado en el que terminó la función (si fue todo bien ST_OK)
+* @param fecha: puntero a fecha_t
+* @param hora: puntero a hora_t
+* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
 */
 
-status_t get_currentdate(struct fecha_t* fecha, struct hora_t* hora){
+status_t get_currentdate(fecha_t* fecha, hora_t* hora){
 	
 	if ( !fecha || !hora )
 		return ST_ERR_PUNT_NULL;
