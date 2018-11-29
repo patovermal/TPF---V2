@@ -28,11 +28,11 @@ status_t  proc_args(int argc, char* argv[],config_t* config){
 	
 	for(i=1;i<argc;i++){
 		if ( argv[i][0] == CHAR_ARG_LCMD_START ){
-			if( (strcmp(argv[i],STR_HELP_S)==0) || (strcmp(argv[i],STR_HELP_L)==0)){
+			if( !strcmp(argv[i],STR_HELP_S) || !strcmp(argv[i],STR_HELP_L) ){
 				config->help = true;
 				return ST_OK;
 			}
-			else if( (strcmp(argv[i],STR_NAME_S)==0 ) || (strcmp(argv[i],STR_NAME_L)==0) ){
+			else if( !strcmp(argv[i],STR_NAME_S) || !strcmp(argv[i],STR_NAME_L) ){
 				if ( (i+1) < argc ){
 					strncpy(config->nombre,argv[i+1],MAX_NOMBRE);
 				}
@@ -40,13 +40,13 @@ status_t  proc_args(int argc, char* argv[],config_t* config){
 				}
 			}
 
-			else if( (strcmp(argv[i],STR_PROTOCOL_S)==0) || (strcmp(argv[i],STR_PROTOCOL_L)==0) ){
+			else if( !strcmp(argv[i],STR_PROTOCOL_S) || !strcmp(argv[i],STR_PROTOCOL_L) ){
 				if ( (i+1) < argc){
-					if ( strcmp(argv[i+1], STR_NMEA )  == 0 ){
+					if ( !strcmp(argv[i+1], STR_NMEA ) ){
 						config->protocol = P_NMEA;
 						boolprot=true;
 					}
-					else if ( strcmp(argv[i+1], STR_UBX )  == 0 ){
+					else if ( !strcmp(argv[i+1], STR_UBX ) ){
 						config->protocol = P_UBX;
 						boolprot=true;
 					}						
@@ -54,28 +54,28 @@ status_t  proc_args(int argc, char* argv[],config_t* config){
 				else {	st = ST_ERR_NO_PROTOCOL; /*Printlog*/
 				}
 			}
-			else if( (strcmp(argv[i],STR_INFILE_S)==0) || (strcmp(argv[i],STR_INFILE_L)==0) ){
+			else if( !strcmp(argv[i],STR_INFILE_S) || !strcmp(argv[i],STR_INFILE_L) ){
 				if ( (i+1)<argc ){
 					strncpy( config->fin , argv[i+1] , MAX_NOMBRE );
 				}
 				else {	st = ST_ERR_NO_LOGFILE; /*Printlog*/
 				}
 			}
-			else if( (strcmp(argv[i],STR_OUTFILE_S) ==0) || (strcmp(argv[i],STR_OUTFILE_L)==0) ){
+			else if( !strcmp(argv[i],STR_OUTFILE_S) || !strcmp(argv[i],STR_OUTFILE_L) ){
 				if ( (i+1)<argc ){
 					strncpy( config->fout, argv[i+1] , MAX_NOMBRE );
 				}
 				else {	st = ST_ERR_NO_LOGFILE; /*Printlog*/
 				}
 			}
-			else if( (strcmp(argv[i],STR_LOGFILE_S) ==0) || (strcmp(argv[i],STR_LOGFILE_L)==0) ){
+			else if( !strcmp(argv[i],STR_LOGFILE_S) || !strcmp(argv[i],STR_LOGFILE_L) ){
 				if ( (i+1)<argc ){
 					strncpy( config->flog , argv[i+1] , MAX_NOMBRE );
 				}
 				else {	st = ST_ERR_NO_LOGFILE; /*Printlog*/
 				}
 			}
-			else if( (strcmp(argv[i],STR_MAXLEN_S) ==0) || (strcmp(argv[i],STR_MAXLEN_L)==0) ){
+			else if( !strcmp(argv[i],STR_MAXLEN_S)  || !strcmp(argv[i],STR_MAXLEN_L) ){
 				if ( (i+1)<argc ){
 					ntemp = strtoul( argv[i+1] , &ctemp , 10 );
 					if ( ctemp != '\0'){
