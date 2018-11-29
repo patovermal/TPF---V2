@@ -1,12 +1,24 @@
+/**
+* @file gpx.h
+* @author buyi97
+* @date 22/11/2019
+* @brief Funciones, tipos y defines para el formato gpx
+*/
+
 #ifndef GPX__H
 #define GPX__H
 
-#include "fecha.h"
-#include "status.h"
+#include <stdio.h>
+#include "../fecha/fecha.h"
+#include "../status/status.h"
 
 #define MAX_NOMBRE 50
 
-/*Estructura para GPX, con los datos a guardar*/
+/* Estructuras */
+/**
+ * @struct gpx_t
+ * @brief Estructura para GPX, con los datos a guardar
+ */
 typedef struct gpx{
 	fecha_t fecha;
 	hora_t hora;
@@ -15,6 +27,10 @@ typedef struct gpx{
 	float elevacion;
 }gpx_t;
 
+/**
+ * @struct Gpx_mtdt
+ * @brief Estructura para la metadata GPX, con los datos a guardar
+ */
 typedef struct metadata_t{
 	char nombre[MAX_NOMBRE+1];
 	fecha_t fecha;
@@ -59,12 +75,12 @@ typedef struct metadata_t{
 #define XMLNS		"http://www.topografix.com/GPX/1/1"
 
 /* prototipos de todas las funciones contenidas */
-void print_header(void);
-void print_metadata(Gpx_mtdt*);
-void print_trk_start(void);
-void print_trkpt(gpx_t* );
-void print_trk_end(void);
-void print_end(void);
+void print_headerGPX(FILE * fout);
+void print_metadataGPX(Gpx_mtdt * fix, FILE * fout);
+void print_trk_startGPX(FILE * fout);
+void print_trkptGPX(gpx_t* fix, FILE * fout);
+void print_trk_endGPX(FILE * fout);
+void print_endGPX(FILE * fout);
 /* fin de prototipos */
 
 
