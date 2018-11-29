@@ -11,18 +11,27 @@
  * @author buyi97
  * @date 22/11/2019
  */
-
-#include <stdlib.h>
-#include <string.h>
-#include "status.h"
  
-/*Estructura para el nodo*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include "../status/status.h"
+ 
+/* Estructuras */
+/**
+ * @struct Node
+ * @brief Estructura para el nodo
+ */
 typedef struct node{
 	void* act;
 	struct node* sig;
 }Node;
 
-/*Variable LISTA, contiene la cantidad máxima de mensajes guardados, la cantidad actual, y un puntero a la primera posición de la lista*/
+/**
+ * @struct List
+ * @brief Estructura para lista
+ */
 typedef struct list{
 	size_t cant_max;
 	size_t cant_actual;
@@ -39,6 +48,7 @@ void Destroy_firstnode( List* , void(*)(void*) );
 void Destroy_list( List* , void(*)(void*) );
 void* PopL_list( List* );
 void* PopR_list( List* );
-
+size_t Cant_act_list( List* lista )
+bool Full_list( List* lista );
 
 #endif

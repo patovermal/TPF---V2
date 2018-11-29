@@ -1,14 +1,10 @@
 /**
 * @file list.c
-* @Author buyi97
+* @author buyi97
 * @date 22/11/2019
 * @brief Funciones para List y Node
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "status.h"
 #include "list.h"
 
 /**
@@ -230,4 +226,36 @@ void* PopR_list( List* lista ){
 	
 	return aux->act;
 	
+}
+
+/**
+* @brief Devuelve la cantidad de nodos que tiene la lista
+* @param lista : puntero a la lista (List*)
+* @return size_t : cantidad de nodos en la lista (si la lista es NULL devuelve 0)
+*/
+
+size_t Cant_act_list( List* lista ){
+	
+	if ( !lista )
+		return 0;
+	
+	return lista->cant_actual;
+	
+}
+
+/**
+* @brief Devuelve la cantidad de nodos que tiene la lista
+* @param lista : puntero a la lista (List*)
+* @return size_t : cantidad de nodos en la lista (si la lista es NULL devuelve 0)
+*/
+
+bool Full_list( List* lista ){
+	
+	if ( !lista )
+		return false;
+	
+	if ( lista->cant_actual == lista->cant_max )
+		return true;
+	
+	return false;
 }
