@@ -4,20 +4,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "fecha.h"
-#include "status.h"
-#include "bits.h"
+#include "../fecha/fecha.h"
+#include "../status/status.h"
+#include "../bits/bits.h"
 
-#define BUFFER_LEN 120 /*La longitúd del buffer debe ser mayor a la máxima longitud posible para una sentencia UBX*/
+#define BUFFER_LEN 500 /*La longitúd del buffer debe ser mayor a la máxima longitud posible para una sentencia UBX*/
 
 /*valores fijos de sentencias UBX*/
 #define SYNC_CHAR1 			0xB5
 #define SYNC_CHAR2 			0X62
+#define SYNC_CHAR_LEN 		2
 #define ID_POS				0
 #define ID_LEN 				2
-#define POS_LARGO 			2
-#define LEN_LARGO 			2 
-#define POS_PAYLOAD 		4 
+#define LARGO_POS			2
+#define LARGO_LEN 			2 
+#define PAYLOAD_POS 		4 
+#define CHECKSUM_LEN 		2
 
 /*identificador de mensaje*/
 #define UBX_NAV_PVT_ID 			0x0701 /*little-endian*/
@@ -71,9 +73,6 @@
 
 #define UBX_CANT_TIPOS 		3
 
-typedef unsigned char uchar; 
-typedef unsigned long ulong; 
-
 /*Tipo para el id de las sentencia UBX*/
 typedef enum ubx_id{
 	NAV_PVT,
@@ -120,9 +119,9 @@ status_t proc_nav_posllh(const uchar * payload, ubx_t * pvt);
 status_t proc_tim_tos(const uchar * payload, ubx_t * pvt);
 status_t proc_nav_pvt(const uchar * payload, ubx_t * pvt);
 status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin);
-bool get_sentence(uchar * buffer, bool * eof, FILE * fin);
-void load_buffer(uchar * buffer, size_t pos, bool * eof, FILE * fin);
-void fread_grind(void *ptr, size_t size, size_t nmemb, FILE *stream, bool * eof);
+bool get_sentence(uchar * buffer, FILE * fin);
+void load_buffer(uchar * buffer, size_t pos, FILE * fin);
+size_t fread_grind(void *ptr, size_t size, size_t nmemb, FILE *stream);
 bool checksum(const uchar *buffer);
 
 
