@@ -42,20 +42,20 @@ long sletol(const uchar *string, size_t pos, size_t len){
 		
 	if ( !string )
 		return 0;
+
+	/*convierte de little-endian a long*/
+	for(i = 0 ; i < len-1 ; i++)
+		entero |= string[pos + i] << SHIFT_BYTE*i;
 	
 	/*lee el signo y asigna su valor a la variable signo*/
-	if( string[pos + len -1]>>(SHIFT_BYTE-1) ){ 
+	if( string[pos + i]>>(SHIFT_BYTE-1) ){ 
 			signo = -1;
 	}else{
 		signo = 1;
 	}
 
-	/*convierte de little-endian a long*/
-	for(i = 0 ; i < len-1 ; i++)
-		entero |= string[pos + i] << SHIFT_BYTE*i;
-
 	/*elimina el bit de signo y termina de convertir de little-endian a long*/
-	entero |= ( (string[pos + len -1] & ~SLETOL_MASK_SIGNO)<< (SHIFT_BYTE*(len -1)) );
+	entero |= ( (string[pos + i] & ~SLETOL_MASK_SIGNO)<< (SHIFT_BYTE*(len -1)) );
 
 	return signo*entero;
 }
