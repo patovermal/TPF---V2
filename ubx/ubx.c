@@ -1,3 +1,4 @@
+s (256 sloc)  9.34 KB
 /**
 * @file ubx.c
 * @Author mauroarbuello
@@ -14,19 +15,32 @@ int main (void){
 	     *fout;
 	int i=0;
 	
-	fin = fopen("UBXtest.txt", "rb");
+	fin = fopen("ubx-nav-posllh_short.ubx", "rb");
 	fout = fopen("prueba.txt", "wb");
 
+	if(ferror(fin))
+		printf("error de lectura\n");
+
+	if(!fin){
+		printf("%s\n", "no existe el archivo de entrada");
+		return EXIT_FAILURE;
+	}
+
+
 	while(!eof){
-		readline_ubx(&sentencia, &eof, fin);
-		if(!eof){
+		if(readline_ubx(&sentencia, &eof, fin) != ST_OK){
+			/*PRINT LOG*/
+			printf("puntero nulo\n");
+			break;
+		}
+
+		if(sentencia){
 			i++;
 			fwrite(sentencia, 1, 98, fout);
 		}
 	}
 
 	printf("se leyeron %d setencias UBX.\n", i);
-	printf("%d\n", NAV_PVT);
  
 	fclose(fin);
 	fclose(fout);
@@ -164,19 +178,29 @@ status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin){
 
 	/*carga inicial del buffer*/
 	if(buffer_empty){
-		fread_grind(buffer, 1, BUFFER_LEN, fin, eof);
-		buffer_empty = false;
+		size_t leido; /*se declara variables dentro del if porque solo son necesarias la primera vez que se llama a la función*/
+	 	int i;
+
+		leido = fread_grind(buffer, 1, BUFFER_LEN, fin);
+		printf("leido = %d\n",(int)leido );
+		/*completa el final del buffer con ceros si no hay más datos para leer del archivo*/
+		if(feof(fin)){
+			for(i = leido ; i < BUFFER_LEN ; i++){
+				buffer[i] = 0; 
+			}
+		}
+		buffer_empty = false;	
 	}
 
 	*eof = false;
 
 	/*busca y devuelve sentencias UBX validadas hasta llegar a EOF*/
-	while(get_sentence(buffer, eof, fin)){   
-		if(checksum(buffer)){   
+	while(get_sentence(buffer, fin)){ 
+		if(checksum(buffer)){   printf("checksum: ok\n"); 
 			*sentencia = buffer;
 			return ST_OK;
 		}else{
-			/*IMPRIMIR LOG*/
+			/*IMPRIMIR LOG*/ printf("checksum: nop\n"); 
 		}
 	}
 	
@@ -195,58 +219,67 @@ status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin){
 */
 
 /*busca una sentencia UBX y la mueve al principio del buffer (no incluye los caracteres de sincronismo)*/
-bool get_sentence(uchar * buffer, bool * eof, FILE * fin){
-	int i = 0;
+bool get_sentence(uchar * buffer, FILE * fin){
+	int i;
 
 	/*busca los dos caracteres de sincronismo en el buffer excepto en los dos últimos bytes*/
 	for(i = 0 ; i < BUFFER_LEN-2 ; i++){
 		if(buffer[i] == SYNC_CHAR1){ 
-			if(buffer[i + 1] == SYNC_CHAR2){
+			if(buffer[i + 1] == SYNC_CHAR2){ printf("encontró la sentencia %02x%02x\n le sigue %02x%02x (%02x%02x)\n",buffer[96], buffer[97], buffer[98], buffer[99],buffer[196], buffer[197]); 
 				/*mueve la sentencia al principio del buffer*/
-				load_buffer(buffer, i + 2, eof, fin);
+				load_buffer(buffer, i + 2, fin);
 				return true;
 			}	
 		}		
 	}
 
 	/*si salió del 'for' y se terminó el archivo es porque no hay más sentencias para leer*/
-	if(feof(fin)){
-		*eof = true;
+	if(feof(fin))
 		return false;
-	}
 
-	/*si salió del 'for' y no se terminó el archivo mueve los dos ultimos bytes al principio del buffer y vuelve a empezar*/
-	load_buffer(buffer, BUFFER_LEN-2, eof, fin);
-	return get_sentence(buffer, eof, fin);	
+
+	/*si salió del 'for' y no se terminó el archivo mueve los dos últimos bytes al principio del buffer y vuelve a empezar*/
+	load_buffer(buffer, BUFFER_LEN-2, fin);
+	return get_sentence(buffer, fin);	
 }
 
-/*borra los bytes que se encuentran antes de la posición 'pos' y carga la misma cantidad al final del buffer leyendo del archivo. 'pos' queda ubicado al principo del buffer*/
-void load_buffer(uchar * buffer, size_t pos, bool * eof, FILE * fin){
-	int i;
+/* mueve al principio del buffer la sentencia ubicada en la posición 'pos' y completa el resto del buffer leyendo del archivo*/
+void load_buffer(uchar * buffer, size_t pos, FILE * fin){
+	int i,
+		leido;
 
 	/*mueve la sentencia al principio del buffer*/
-	for(i = 0 ; i < BUFFER_LEN-pos ; i++){
+	for(i = 0 ; i < BUFFER_LEN - pos ; i++){
 		buffer[i] = buffer[pos + i];
 	}
 
-	
 	/*sobreescribe la parte final del buffer*/
-	fread_grind(buffer + BUFFER_LEN - pos, 1, pos, fin, eof);
+	if((leido = fread_grind(buffer + BUFFER_LEN - pos, 1, pos, fin)) != pos){
+		/*completa el final del buffer con ceros si no hay más datos para leer del archivo*/
+		if(feof(fin)){ printf("pos = %d\nleido = %d \n empieza a poner ceros en %02x%02x%02x%02x\n",(int)pos,(int)leido,buffer[BUFFER_LEN - pos + leido],buffer[BUFFER_LEN - pos + leido+1],buffer[BUFFER_LEN - pos + leido+2],buffer[BUFFER_LEN - pos + leido+3]);
+			for(i = BUFFER_LEN - pos + leido ; i < BUFFER_LEN ; i++){
+				buffer[i] = 0;
+			} 
+
+		}
+	}	
+	
 	return;
 }
 
-/*lee del archivo y sobreescribe la parte final del buffer */
-void fread_grind(void *ptr, size_t size, size_t nmemb, FILE *stream, bool * eof){
-	if(fread(ptr, size, nmemb, stream) != nmemb){ 
+/*lee del archivo y valida los pámetros de fread*/
+size_t fread_grind(void *ptr, size_t size, size_t nmemb, FILE *stream){
+	size_t leido;
+	
+	if((leido = fread(ptr, size, nmemb, stream)) != nmemb){ 
 			if (ferror(stream)){
 				/*IMPRIMIR LOG*/
 			}
 			if(feof(stream)){ 
-				*eof = true;
-				/*IMPRIMIR LOG*/
+				/*IMPRIMIR LOG*/printf("%s\n","EOF (fread_grind)" );printf("leido = %d (fread_grind)\n",(int)leido );
 			}
 	}
-	return;
+	return leido;
 }
 
 /*calcula el checksum*/
@@ -257,15 +290,15 @@ bool checksum(const uchar *buffer){
 	int i;
 	
 	/*lee el largo*/
-	largo = letol(buffer, POS_LARGO, LEN_LARGO);
+	largo = letol(buffer, LARGO_POS, LARGO_LEN);
 	
-	/*si el largo leído es mayor a la máxima longitud de una sentencia UBX hay un error en la sentencia*/
-	if(largo > BUFFER_LEN)
+	/*si el largo leído es mayor al espacio disponible en el buffer no se puede realizar la lectura*/
+	if(largo > BUFFER_LEN - ID_LEN - LARGO_LEN - CHECKSUM_LEN)
 		/*IMPRIMIR LOG*/
 		return false;
 
 	/*Calcula el checksum*/
-	for(i = 0 ; i < (POS_PAYLOAD + largo) ; i++){
+	for(i = 0 ; i < (PAYLOAD_POS + largo) ; i++){
 		ck_a = ck_a + buffer[i];
 		ck_b = ck_b + ck_a;
 	}
