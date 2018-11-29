@@ -68,7 +68,7 @@
 #define CMD_CANTIDAD_1 "-m"
 #define CMD_CANTIDAD_2 "--maxlen"
 #define MSJ_CANTIDAD "cantidad"
-#define FORMATO_CANTIDAD "Máxima cantidad de mensajes a almacenar ="
+#define FORMATO_CANTIDAD "Maxima cantidad de mensajes a almacenar ="
 
 /* ejemplos */
 #define EJ_NOMBRE "@1_nombre_1@"
@@ -80,14 +80,14 @@
 #define COMENT_HELP "Se muestra una ayuda"
 #define COMENT_NOMBRE "Modifica el metadato nombre"
 #define COMENT_FORMATO "Indica el protocolo a leer"
-#define COMENT_ARCHIVO_IN "Indica ell nombre del archivo a utilizar como entrada de datos"
+#define COMENT_ARCHIVO_IN "Indica el nombre del archivo a utilizar como entrada de datos"
 #define COMENT_ARCHIVO_OUT "Indica el nombre a utilizar para el archivo gpx"
 #define COMENT_ARCHIVO_LOG "Indica el nombre del archivo de logs"
-#define COMENT_CANTIDAD "Indica la máxima cantidad de mensajes que se pueden almacenar en una lista"
+#define COMENT_CANTIDAD "Indica la maxima cantidad de mensajes que se pueden almacenar en una lista"
 
 /* info del programa */
 #define MSJ_HORA_SIS "En caso de un error de lectura, se tomaran los datos del sistema"
-#define MSJ_MAX_CHAR "El largo máximo de la cadena a procesar es "
+#define MSJ_MAX_CHAR "El largo maximo de la cadena a procesar es "
 
 /*Prototipos*/
 void print_help(void);
