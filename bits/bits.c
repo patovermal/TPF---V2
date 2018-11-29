@@ -5,20 +5,22 @@
 * @brief Funciones que operan con bits.
 */
 
-#include <math.h>
 #include "bits.h"
 
 /**
 * @brief Convierte de little-endian a entero sin signo.
-* @param string
-* @param pos
-* @param len
-* @return ulong : Un entero sin signo
+* @param string : arreglo de bytes
+* @param pos : posicion del inicio del número a convertir en el arreglo
+* @param len : largo del numero a convertir
+* @return ulong : numero convertido
 */
 ulong letol(const uchar *string, size_t pos, size_t len){
 	ulong entero = 0;
 	int i;
-
+	
+	if ( !string )
+		return 0;
+	
 	for(i = 0 ; i < len ; i++)
 		entero |= string[pos + i] << SHIFT_BYTE*i;
 
@@ -28,19 +30,21 @@ ulong letol(const uchar *string, size_t pos, size_t len){
 
 /**
 * @brief Convierte de little-endian a entero con signo.
-* @param string
-* @param pos
-* @param len
-* @return ulong : Un entero con signo
+* @param string : arreglo de bytes
+* @param pos : posicion del inicio del número a convertir en el arreglo
+* @param len : largo del numero a convertir
+* @return long : numero convertido
 */
 long sletol(const uchar *string, size_t pos, size_t len){
 	long entero = 0,
 		 signo;
 	int i;
 		
-
+	if ( !string )
+		return 0;
+	
 	/*lee el signo y asigna su valor a la variable signo*/
-	if(string[pos + len -1]>>7){ 
+	if( string[pos + len -1]>>(SHIFT_BYTE-1) ){ 
 			signo = -1;
 	}else{
 		signo = 1;
@@ -51,7 +55,7 @@ long sletol(const uchar *string, size_t pos, size_t len){
 		entero |= string[pos + i] << SHIFT_BYTE*i;
 
 	/*elimina el bit de signo y termina de convertir de little-endian a long*/
-	entero |= ((string[pos + len -1] & ~SLETOL_MASK_SIGNO)<< SHIFT_BYTE*(len -1));
+	entero |= ( (string[pos + len -1] & ~SLETOL_MASK_SIGNO)<< (SHIFT_BYTE*(len -1)) );
 
 	return signo*entero;
 }
