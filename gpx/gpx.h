@@ -38,16 +38,16 @@ typedef struct metadata_t{
 }Gpx_mtdt;
 
 /* definicion de los chars a usar */
-#define CHAR_START 		"<"
-#define CHAR_END 		">"
-#define CHAR_QUESTION 	"?"
-#define CHAR_COMILLAS 	"\""
-#define CHAR_EQUAL 		"="
-#define CHAR_BAR 		"/"
-#define CHAR_FECHA_SEP	"-"
-#define CHAR_HORA_SEP	":"
-#define CHAR_FECHA_END	"T"
-#define CHAR_HORA_END 	"Z"
+#define CHAR_START 	'<'
+#define CHAR_END 	'>'
+#define CHAR_QUESTION 	'?'
+#define CHAR_COMILLAS 	'\"'
+#define CHAR_EQUAL 	'='
+#define CHAR_BAR 	'/'
+#define CHAR_FECHA_SEP	'-'
+#define CHAR_HORA_SEP	':'
+#define CHAR_FECHA_END	'T'
+#define CHAR_HORA_END 	'Z'
 
 /* definicion de las cadenas a usar */
 #define MSJ_XML 			"xml"
