@@ -1,19 +1,18 @@
 /**
 * @file geopos.c
-* @Author buyi97
+* @author buyi97
 * @date 18/11/2019
 * @brief Funciones para latitud y longitud
 */
 
-#include <string.h>
-#include <stdlib.h>
-#include "status.h"
 #include "geopos.h"
 
 /**
-* @brief Pasar de una cadena ddmm.mm a latitud
-* @param Cadena ddmm.mm, cadena indicadora (norte o sur) , puntero a double latitud;
-* @return El estado en el que terminó la función (si fue todo bien ST_OK)
+* @brief Pasar de una cadena ddmm.mm a latitud en grados
+* @param cad_lat: cadena ddmm.mm
+* @param indicador: cadena indicadora (norte "N" o sur "S")
+* @param latitud: puntero a double latitud, donde se guardará el valor convertido de latitud
+* @return status_t: el estado en el que termina la función (si fue todo bien ST_OK)
 */
 
 status_t str2lat(char* cad_lat, char* indicador, double* latitud){
@@ -46,9 +45,11 @@ status_t str2lat(char* cad_lat, char* indicador, double* latitud){
 }
 
 /**
-* @brief Pasar de una cadena ddmm.mm a longitud
-* @param Cadena ddmm.mm, cadena indicadora (este u oeste), puntero a double latitud;
-* @return El estado en el que terminó la función (si fue todo bien ST_OK)
+* @brief Pasar de una cadena dddmm.mm a longitud en grados
+* @param cad_lon: cadena ddmm.mm
+* @param indicador: cadena indicadora (oeste "W" o este "E")
+* @param longitud: puntero a double longitud, donde se guardará el valor convertido de longitud
+* @return status_t: el estado en el que termina la función (si fue todo bien ST_OK)
 */
 
 status_t str2lon(char* cad_lon, char* indicador, double* longitud){
