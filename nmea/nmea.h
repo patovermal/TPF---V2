@@ -1,13 +1,24 @@
+/**
+* @file nmea.h
+* @author buyi97
+* @date 22/11/2019
+* @brief Define y structs para NMEA
+*/
+
 #ifndef NMEA__H
 #define NMEA__H
 
+#include <stdio.h>
+#include <time.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
-#include "geopos.h"
-#include "status.h"
-#include "fecha.h"
-#include "gpx.h"
+#include "../geopos/geopos.h"
+#include "../status/status.h"
+#include "../fecha/fecha.h"
+#include "../gpx/gpx.h"
+#include "../files/files.h"
+#include "../list/list.h"
 
 #define NMEA_TOKEN_CHKSUM '*'
 
@@ -56,6 +67,10 @@
 #define NMEA_ZDA_HHUTC_POS	5
 #define NMEA_ZDA_MMUTC_POS	6
 
+/**
+ * @enum calidad_t
+ * @brief Tipo enumerativo para la calidad del fix
+ */
 /*Tipo de dato para la CALIDAD DEL FIX*/
 typedef enum calidad_t{ 
 	CAL_INVALIDO, 
@@ -69,6 +84,10 @@ typedef enum calidad_t{
 	CAL_SIMULATION 
 }calidad_t;
 
+/**
+ * @struct gga_t
+ * @brief Estructura para la sentencia GGA
+ */
 /*Estructura para GGA, con los datos a guardar*/
 typedef struct gga{
 	hora_t hora;
@@ -81,6 +100,10 @@ typedef struct gga{
 	float sep_geoide;
 }gga_t;
 
+/**
+ * @struct zda_t
+ * @brief Estructura para la sentencia ZDA
+ */
 /*Estructura para ZDA, con los datos a guardar*/
 typedef struct zda{
 	fecha_t fecha;
@@ -89,6 +112,10 @@ typedef struct zda{
 	int mm_utc;
 }zda_t;
 
+/**
+ * @struct rmc_t
+ * @brief Estructura para la sentencia RMC
+ */
 /*Estructura para RMC, con los datos a guardar*/
 typedef struct rmc{
 	fecha_t fecha;
@@ -101,6 +128,10 @@ typedef struct rmc{
 	float desv_mag;
 }rmc_t;
 
+/**
+ * @enum nmea_id
+ * @brief Tipo enumerativo para el ID (tipo de sentencia) de NMEA
+ */
 /*Tipo para el id de las sentencia NMEA*/
 typedef enum nmea_id{
 	RMC,
@@ -108,6 +139,10 @@ typedef enum nmea_id{
 	GGA,
 }nmea_id;
 
+/**
+ * @struct nmea_t
+ * @brief Estructura para las sentencias NMEA
+ */
 /*Estructura NMEA, con los datos a guardar (contiene una union de rmc_t, zda_t, y gga_t porque pueden venir cualquiera de los 3)*/
 typedef struct nmea{
 	nmea_id	id;
@@ -128,5 +163,6 @@ bool verify_checksum ( char* );
 status_t rmc2gpx( nmea_t* nmea , gpx_t* gpx);
 status_t zda2gpx( nmea_t* nmea , gpx_t* gpx);
 status_t gga2gpx( nmea_t* nmea , gpx_t* gpx);
+status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen );
 
 #endif

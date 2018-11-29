@@ -1,52 +1,11 @@
 /**
 * @file nmea.c
-* @Author buyi97
+* @author buyi97
 * @date 22/11/2019
 * @brief Funciones para NMEA
 */
 
-#include <stdbool.h>
-#include <stdlib.h>
-#include <string.h>
-#include "geopos.h"
-#include "status.h"
-#include "fecha.h"
-#include "gpx.h"
 #include "nmea.h"
-
-/**
-* @brief Corta una cadena en un arreglo de cadenas segun el delimitador que le pases
-* @param cadena: cadena ZDA
-* @param ptr2ptrarray: puntero al arreglo de cadenas
-* @param delim: char delimitador
-* @return size_t : cantidad de cadenas es el arreglo de cadenas
-*/
-
-size_t split_delim (char * cadena, char ** ptr2ptrarray, char delim) {
-	
-	size_t i=0;	/* variable de iteracion */
-
-	if ( !cadena || !ptr2ptrarray )	/* valido los punteros */
-		return 0;
-	
-	ptr2ptrarray[0] = cadena;
-	
-	if ( !( ptr2ptrarray[1] = strchr(cadena,delim) ) )	/* busco el primer delim */
-		return 0;
-	
-	*(ptr2ptrarray[1])='\0';	/* le asigno un \0 */
-	ptr2ptrarray[1]++;			/* le hago apuntar a un lugar despues del \0 */
-	
-	for (i = 2; ( ptr2ptrarray[i] = strchr(ptr2ptrarray[i-1],delim) ) ; i++) {
-		
-		ptr2ptrarray[i][0] = '\0';
-		ptr2ptrarray[i]++;
-		
-	}
-
-	return i;
-	
-}
 
 /**
 * @brief Cargar en una estructura los datos de ZDA a partir de una cadena
@@ -56,8 +15,7 @@ size_t split_delim (char * cadena, char ** ptr2ptrarray, char delim) {
 */
 
 status_t proc_zda(nmea_t* nmea, char* cadena){
-	
-	FILE *flogs;
+
 	char* cad_arr[NMEA_DELIM_CANT_MAX];
 	char * temp;
 
@@ -65,56 +23,42 @@ status_t proc_zda(nmea_t* nmea, char* cadena){
 		return ST_ERR_PUNT_NULL;
 
     /* split devuelve la cant de cadenas que separo. Si ese numero es menor a NMEA_DELIM_CANT_MIN, se descarta el dato*/
-	if ( split_delim( cadena , cad_arr , NMEA_DELIM_CHAR ) < NMEA_DELIM_CANT_MIN ) {
-		print_logs(ERR_INV_NMEA, flogs);
+	if ( split_delim( cadena , cad_arr , NMEA_DELIM_CHAR ) < NMEA_DELIM_CANT_MIN )
 		return ST_ERR_SENTENCIA_INVALIDA;
-	}
 	
 	/* convierto de cadena "hhmmss.ss" al tipo hora_t (struct hora) con la función str2hora (fecha.h) */
-	if ( str2hora( cad_arr[NMEA_ZDA_HORA_POS] , &nmea->type.zda.hora ) != ST_OK ) {
-		print_logs(ERR_INV_NMEA, flogs);
+	if ( str2hora( cad_arr[NMEA_ZDA_HORA_POS] , &nmea->type.zda.hora ) != ST_OK )
 		return ST_ERR_SENTENCIA_INVALIDA;
-	}
 
 	/* verifico que el dia sea un numero y lo cargo en la estructura */
 	nmea->type.zda.fecha.day = strtoul(cad_arr[NMEA_ZDA_DIA_POS], &temp, 10);
 	
-	if ( *temp != '\0' ) {
-		print_logs(ERR_INV_NMEA, flogs);
+	if ( *temp != '\0' )
 		return ST_ERR_SENTENCIA_INVALIDA;
-	}
 
 	/* idem anterior para el mes */
 	nmea->type.zda.fecha.month = strtoul(cad_arr[NMEA_ZDA_MES_POS], &temp, 10);
 	
-	if ( *temp != '\0' ) {
-		print_logs(ERR_INV_NMEA, flogs);
+	if ( *temp != '\0' )
 		return ST_ERR_SENTENCIA_INVALIDA;
-	}
 
 	/* idem anterior para el año */
 	nmea->type.zda.fecha.year = strtoul(cad_arr[NMEA_ZDA_ANIO_POS], &temp, 10);
 	
-	if ( *temp != '\0' ) {
-		print_logs(ERR_INV_NMEA, flogs);
+	if ( *temp != '\0' )
 		return ST_ERR_SENTENCIA_INVALIDA;
-	}
 
 	/* verifico que zona horaria sea un numero y lo cargo en la estructura */
 	nmea->type.zda.hh_utc = strtol(cad_arr[NMEA_ZDA_HHUTC_POS], &temp, 10);
 	
-	if ( *temp != '\0' ) {
-		print_logs(ERR_INV_NMEA, flogs);
+	if ( *temp != '\0' )
 		return ST_ERR_SENTENCIA_INVALIDA;
-	}
 
 	/* idem anterior pero para los minutos de diferencia */
 	nmea->type.zda.mm_utc = strtol(cad_arr[NMEA_ZDA_HHUTC_POS], &temp, 10);
 	
-	if ( *temp != '\0' ) {
-		print_logs(ERR_INV_NMEA, flogs);
+	if ( *temp != '\0' )
 		return ST_ERR_SENTENCIA_INVALIDA;
-	}
 	
 	return ST_OK;
 
@@ -129,7 +73,6 @@ status_t proc_zda(nmea_t* nmea, char* cadena){
 
 status_t proc_rmc(nmea_t* nmea, char* cadena){
 	
-	FILE *flogs;
 	char* cad_arr[NMEA_DELIM_CANT_MAX];
 	status_t st;
 	char* ctemp;
@@ -137,15 +80,11 @@ status_t proc_rmc(nmea_t* nmea, char* cadena){
 	if ( !cadena || !nmea )
 		return ST_ERR_PUNT_NULL;
 	
-	if ( split_delim( cadena , cad_arr , NMEA_DELIM_CHAR ) < NMEA_DELIM_CANT_MIN ) {
-		print_logs(ERR_INV_NMEA, flogs);
+	if ( split_delim( cadena , cad_arr , NMEA_DELIM_CHAR ) < NMEA_DELIM_CANT_MIN )
 		return ST_ERR_SENTENCIA_INVALIDA;
-	}
 
-	if ( ( st = str2hora( cad_arr[NMEA_RMC_HORA_POS] , &nmea->type.rmc.hora ) ) != ST_OK ) {
-		print_logs(ERR_INV_NMEA, flogs);
+	if ( ( st = str2hora( cad_arr[NMEA_RMC_HORA_POS] , &nmea->type.rmc.hora ) ) != ST_OK )
 		return st;
-	}
 
 
 	/* 	if ( strcmp( cad_arr[NMEA_RMC_ST_POS] , STR_RMC_ACTIVE ) == 0 )
@@ -153,41 +92,29 @@ status_t proc_rmc(nmea_t* nmea, char* cadena){
 	else 
 		return ST_ERR_FIX_INVALIDA; */
 
-	if ( ( st = str2lat( cad_arr[NMEA_RMC_LAT_POS], cad_arr[NMEA_RMC_LAT_POS + 1] , &nmea->type.rmc.latitud ) ) != ST_OK ) {
-		print_logs(ERR_INV_NMEA, flogs);
+	if ( ( st = str2lat( cad_arr[NMEA_RMC_LAT_POS], cad_arr[NMEA_RMC_LAT_POS + 1] , &nmea->type.rmc.latitud ) ) != ST_OK )
 		return st;
-	}
 
-	if ( ( st = str2lon( cad_arr[NMEA_RMC_LON_POS], cad_arr[NMEA_RMC_LON_POS + 1] , &nmea->type.rmc.longitud ) ) != ST_OK ) {
-		print_logs(ERR_INV_NMEA, flogs);
+	if ( ( st = str2lon( cad_arr[NMEA_RMC_LON_POS], cad_arr[NMEA_RMC_LON_POS + 1] , &nmea->type.rmc.longitud ) ) != ST_OK )
 		return st;
-	}
 
 	nmea->type.rmc.velocidad = strtod( cad_arr[NMEA_RMC_VEL_POS] , &ctemp );
 	
-	if ( *ctemp != '\0' ) {
-		print_logs(ERR_INV_NMEA, flogs);
+	if ( *ctemp != '\0' )
 		return ST_ERR_SENTENCIA_INVALIDA;
-	}
 	
 	nmea->type.rmc.ang_seg = strtod( cad_arr[NMEA_RMC_ANG_POS] , &ctemp );
 	
-	if ( *ctemp != '\0' ) {
-		print_logs(ERR_INV_NMEA, flogs);
+	if ( *ctemp != '\0' )
 		return ST_ERR_SENTENCIA_INVALIDA;
-	}
 	
-	if ( ( st = str2fecha( cad_arr[NMEA_RMC_FECHA_POS] , &nmea->type.rmc.fecha ) ) != ST_OK ) {
-		print_logs(ERR_INV_NMEA, flogs);
+	if ( ( st = str2fecha( cad_arr[NMEA_RMC_FECHA_POS] , &nmea->type.rmc.fecha ) ) != ST_OK )
 		return st;
-	}
-		
+	
 	nmea->type.rmc.desv_mag = strtod( cad_arr[NMEA_RMC_DESV_POS] , &ctemp );
 	
-	if ( *ctemp != '\0' ) {
-		print_logs(ERR_INV_NMEA, flogs);
+	if ( *ctemp != '\0' )
 		return ST_ERR_SENTENCIA_INVALIDA;
-	}
 	
 	return ST_OK;
 	
@@ -210,22 +137,16 @@ status_t proc_gga(nmea_t* nmea, char* cadena){
 		return ST_ERR_PUNT_NULL;
 	
 	if ( split_delim( cadena , cad_arr , NMEA_DELIM_CHAR ) < NMEA_DELIM_CANT_MIN ){
-		print_logs(ERR_INV_NMEA, flogs);
 		return ST_ERR_SENTENCIA_INVALIDA;
 	}
 	
 	if ( ( st = str2hora( cad_arr[NMEA_GGA_HORA_POS] , &nmea->type.gga.hora ) ) != ST_OK ){
-		print_logs(ERR_INV_NMEA, flogs);
 		return st;
 	}
-	
 	if ( ( st = str2lat( cad_arr[NMEA_GGA_LAT_POS], cad_arr[NMEA_GGA_LAT_POS + 1] , &nmea->type.gga.latitud ) ) != ST_OK ){
-		print_logs(ERR_INV_NMEA, flogs);
 		return st;
 	}
-	
 	if ( ( st = str2lon( cad_arr[NMEA_GGA_LON_POS], cad_arr[NMEA_GGA_LON_POS + 1] , &nmea->type.gga.longitud ) ) != ST_OK ){
-		print_logs(ERR_INV_NMEA, flogs);
 		return st;
 	}
 	
@@ -301,7 +222,7 @@ bool verify_checksum ( char* str_origen ){
 
 	temp = strchr(str_origen,NMEA_TOKEN_CHKSUM);
 	
-	if (!temp) 
+	if (!temp)
 		return false;
 	
 	*temp = '\0';
@@ -316,7 +237,7 @@ bool verify_checksum ( char* str_origen ){
 	
 	if (char_temp == num_temp)
 		return true;
-	
+
 	return false;
 
 }
@@ -337,12 +258,10 @@ status_t proc_nmea( char* cadena , nmea_t * nmea ){
 		return ST_ERR_PUNT_NULL;
 
 	if ( verify_checksum( cadena ) == false ){
-		print_logs(ERR_INV_CHKSUM, flogs);
 		return ST_ERR_SENTENCIA_INVALIDA;
 	}
 
 	if ( ( st = get_nmea_id( cadena , &(nmea->id) ) ) != ST_OK ){
-		print_logs(WARN_ID_DESC, flogs);
 		return st;
 	}
 
@@ -434,17 +353,112 @@ status_t get_nmea_id ( const char *cadena , nmea_id* id ) {
 	if ( strncmp ( ptr2delim-NMEA_ID_LEN , NMEA_GGA_STR , NMEA_ID_LEN) == 0) {
 		*id = GGA;
 		return ST_OK;
-	} else {
-		if ( strncmp ( ptr2delim-NMEA_ID_LEN , NMEA_RMC_STR , NMEA_ID_LEN) == 0) {
-			*id = RMC;
-			return ST_OK;
-		} else {
-			if ( strncmp ( ptr2delim-NMEA_ID_LEN , NMEA_ZDA_STR , NMEA_ID_LEN) == 0) {
-					*id = ZDA;
-					return ST_OK;
-			} else {
+	}
+	if ( strncmp ( ptr2delim-NMEA_ID_LEN , NMEA_RMC_STR , NMEA_ID_LEN) == 0) {
+		*id = RMC;
+		return ST_OK;
+	}
+	if ( strncmp ( ptr2delim-NMEA_ID_LEN , NMEA_ZDA_STR , NMEA_ID_LEN) == 0) {
+		*id = ZDA;
+		return ST_OK;
+	}
 	
-				return ST_ERR_ID_INVALIDO;
-			}
+	return ST_ERR_ID_INVALIDO;
 
+}
+
+/**
+* @brief Lee, procesa e imprime en formato GPX sentencias NMEA del tipo GGA,RMC,ZDA
+* @param files : puntero a Files_t, que contiene fin, fout y flog
+* @param maxlen : maximo de nodos que puede tener la lista de mensajes gpx
+* @return status_t : el estado en el que termina la funcion (ST_OK si esta bien)
+*/
+
+status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
+	
+	status_t (*pfunc[ NMEA_CANT_TIPOS ])( nmea_t* , gpx_t* ) = { rmc2gpx,  zda2gpx,  gga2gpx }; /*Arreglo de punteros a funciones*/
+	nmea_t* nmea;
+	char str[ NMEA_MAX_LEN ];
+	List lista;
+	status_t st;
+	gpx_t* gpx;
+	fecha_t fecha_cur;
+	hora_t hora_cur;
+	
+	if ( get_currentdate( &fecha_cur , &hora_cur ) != ST_OK )
+		return ST_ERR_PUNT_NULL;
+	
+	if ( ( st = Make_list( &lista , maxlen ) ) != ST_OK ){
+		print_log( files->flog , st );
+		return st;
+	}
+	
+	srand(time(NULL));
+	
+	if ( !files || !fecha_cur )
+		return ST_ERR_PUNT_NULL;
+	
+	if (  !( nmea = (nmea_t*)calloc(1,sizeof(nmea_t)) ) ){
+		return ST_ERR_NOMEM;
+	}
+	
+	while ( fgets( str , NMEA_MAX_LEN , files->fin ) != NULL ){
+		
+		if ( ( st = proc_nmea( str , nmea ) )!= ST_OK ){
+			print_log( files->flog , st );
+			continue;
+		}
+		
+		switch ( nmea->id ){
+			case ZDA:
+				fecha_cur = nmea->type.zda.fecha;
+				break;
+			case RMC:
+				fecha_cur = nmea->type.rmc.fecha;
+				break;
+			case GGA:
+				break;
+		}
+
+		if ( nmea->id == ZDA )
+			continue;
+		
+		if (  !( gpx = (gpx_t*)calloc(1,sizeof(gpx_t)) ) ){
+			free(nmea);
+			nmea = NULL;
+			Destroy_list( &lista , &free );
+	    	return ST_ERR_NOMEM;
+		}
+		
+		if ( ( st = (*pfunc[ nmea->id ])( nmea , gpx ) ) != ST_OK ) {
+			free(gpx);
+			gpx = NULL;
+			print_log( files->flog , st);
+			continue;
+		}
+		
+		gpx->fecha = *fecha_cur;
+		
+		if ( (st = AppendR_list( &lista , gpx )) != ST_OK ){
+			print_log( files->flog , st );
+			free(gpx);
+			gpx = NULL;
+		}
+		
+		if ( rand()%11 <= 7 ){
+			print_trkpt( PopL_list( &lista ) );
+			Destroy_firstnode( &lista, &free );
+		}
+		
+	}
+	
+	while ( Cant_act_list( &lista ) ){
+		print_trkpt( PopL_list( &lista ) );
+		Destroy_firstnode( &lista, &free );
+	}
+	
+	free(nmea);
+	Destroy_list( &lista , &free );
+	return ST_OK;
+	
 }
