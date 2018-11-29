@@ -25,15 +25,19 @@
 #define MSJ_ERR_INV_CHKSUM "El checksum no concuerda"
 #define MSJ_ERR_INV_LONG_UBX "El mensaje UBX tiene un largo inválido"
 #define MSJ_ERR_INV_NMEA "El mensaje NMEA está mal formado"
+#define MSJ_ERR_GET_DATE "Error al obtener la fecha del sistema"
+#define MSJ_ERR_NO_MEM "No hay memoria disponible"
+#define MSJ_ERR_LIST_MAKE "Error al crear la lista"
 
 /* warning */
 #define MSJ_WARN_ID_DESC "No se reconoce el ID"
 #define MSJ_WARN_FIX_INV "Fix inválido"
-#define MSJ_WARN_FULL_LIST "La lista esta llena. Se descarta el mensaje más viejo"
+#define MSJ_WARN_FULL_LIST "La lista está llena"
+#define MSJ_WARN_GPX_CONV "Problema a convertir a GPX, se descarta"
 
 /* debug */
 #define MSJ_DB_BYTES_SYNC "Buscando bytes de sincronismo"
-#define MSJ_DB_ID_DETECT "ID identificado: " //para poner despues que ID
+#define MSJ_DB_ID_DETECT "ID identificado"
 #define MSJ_DB_MSJ_DET "Se recolectó un mensaje"
 #define MSJ_DB_MSJ_UP "Se cargó un mensaje en la lista"
 
@@ -43,9 +47,21 @@
  * @brief Tipo de dato para logs
  */
 typedef enum log_t {
-    ERR_OPEN_FILE, ERR_INV_CHKSUM, ERR_INV_LONG_UBX,
-    ERR_INV_NMEA, WARN_ID_DESC, WARN_FIX_INV, WARN_FULL_LIST,
-    DB_BYTES_SYNC, DB_ID_DETECT, DB_MSJ_DET, DB_MSJ_UP
+    ERR_OPEN_FILE, 
+	ERR_INV_CHKSUM, 
+	ERR_INV_LONG_UBX,
+    ERR_INV_NMEA, 
+	ERR_GET_DATE, 
+	ERR_NO_MEM, 
+	ERR_LIST_MAKE, 
+	WARN_ID_DESC, 
+	WARN_FIX_INV, 
+	WARN_FULL_LIST, 
+	WARN_GPX_CONV,
+    DB_BYTES_SYNC, 
+	DB_ID_DETECT, 
+	DB_MSJ_DET, 
+	DB_MSJ_UP
 } log_t;
 
 /* prototipos  */

@@ -45,6 +45,19 @@ status_t print_logs (log_t logs, FILE *flogs) {
         case ERR_INV_NMEA:
             fprintf(flogs, "%s: %s\n", MSJ_ERR_PREFIJO, MSJ_ERR_INV_NMEA);
             break;
+		
+		case ERR_GET_DATE:
+			fprintf(flogs, "%s: %s\n", MSJ_ERR_PREFIJO, MSJ_ERR_GET_FECHA);
+            break;
+			
+		case ERR_NO_MEM:
+			fprintf(flogs, "%s: %s\n", MSJ_ERR_PREFIJO, MSJ_ERR_NO_MEM);
+            break;
+		
+		case ERR_LIST_MAKE:
+			fprintf(flogs, "%s: %s\n", MSJ_ERR_PREFIJO, MSJ_ERR_LIST_MAKE);
+            break;
+		
         /* Warnings (WARN) */
         case WARN_ID_DESC:
             fprintf(flogs, "%s: %s\n", MSJ_WARN_PREFIJO, MSJ_WARN_ID_DESC);
@@ -56,6 +69,10 @@ status_t print_logs (log_t logs, FILE *flogs) {
 
         case WARN_FULL_LIST:
             fprintf(flogs, "%s: %s\n", MSJ_WARN_PREFIJO, MSJ_WARN_FULL_LIST);
+            break;
+			
+		case WARN_GPX_CONV:
+            fprintf(flogs, "%s: %s\n", MSJ_WARN_PREFIJO, MSJ_WARN_GPX_CONV);
             break;
 
         /* Debug (DB) */
