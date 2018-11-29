@@ -9,22 +9,22 @@
 #include "logs.h"
 
 /**
-* @brief Imprime los logs del programa.
-* @param logs : el tipo de incidente.
-* @param flogs : indica donde se guardarán los mensajes.
-* @return Void : no devuelve nada. 
+* @brief Imprimir logs
+* @param logs : log_t tipo de log a loguear
+* @param flogs : puntero a archivo de logs
+* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
 */
 
-void print_logs (log_t logs, FILE *flogs) {
+status_t print_logs (log_t logs, FILE *flogs) {
     
     time_t now;     
     time(&now);     
     char * date =ctime(&now);
     
     if (!flogs)
-        return;
+        return ST_ERR_PUNT_NULL;
     
-	date[strlen(date) - 1] = '\0';
+	date[strlen(date) - 1] = '\0'; /* le saco el \n que tiene para que imprima todo en una linea*/
 	fprintf(flogs, "%s - " , date);
 	
     switch(logs) {
@@ -44,10 +44,6 @@ void print_logs (log_t logs, FILE *flogs) {
 
         case ERR_INV_NMEA:
             fprintf(flogs, "%s: %s\n", MSJ_ERR_PREFIJO, MSJ_ERR_INV_NMEA);
-            break;
-		    
-	case ERR_PTR_NULL:
-            fprintf(flogs, "%s: %s\n", MSJ_ERR_PREFIJO, MSJ_ERR_PTR_NULL);
             break;
         /* Warnings (WARN) */
         case WARN_ID_DESC:
@@ -78,9 +74,6 @@ void print_logs (log_t logs, FILE *flogs) {
         case DB_MSJ_UP:
             fprintf(flogs, "%s: %s\n", MSJ_DEBUG_PREFIJO, MSJ_DB_MSJ_UP);
             break;
-		    
-	case DB_MSJ_UP:
-            fprintf(flogs, "%s: %s\n", MSJ_DEBUG_PREFIJO, MSJ_DB_MSJ_PRINT);
-            break;
     }
+    return ST_OK;
 }
