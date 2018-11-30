@@ -196,6 +196,7 @@ status_t tos2gpx( ubx_t* ubx , gpx_t* gpx){
 	return ST_OK;
 }
 
+
 status_t posllh2gpx( ubx_t* ubx , gpx_t* gpx){
 
 	if ( !ubx || !gpx )
@@ -211,6 +212,12 @@ status_t posllh2gpx( ubx_t* ubx , gpx_t* gpx){
 	return ST_OK;
 }
 
+/**
+* @brief Cargar en una estructura los datos de de una sentencia UBX a partir de un arreglo de bytes
+* @param sentencia: arreglo del que se lee la sentencia
+* @param ubx: puntero a estructura ubx
+* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
+*/
 status_t proc_ubx(uchar * sentencia, ubx_t * ubx){
 	proc_ubx_t funcion[] = {&proc_nav_pvt, &proc_tim_tos, &proc_nav_posllh};
 
@@ -236,16 +243,16 @@ status_t proc_ubx(uchar * sentencia, ubx_t * ubx){
 			return ST_ERR_ID_INVALIDO;
 	}
 
-	return funcion[ubx->id](sentencia, ubx);
+	return funcion[ubx->id](sentencia[PAYLOAD_POS], ubx);
 }
 
+
 /**
-* @brief Cargar en una estructura los datos de UBX_NAV_PVT a partir de un arreglo de bytes
-* @param sentencia: arreglo de bytes
-* @param ubx: puntero a ubx_t
+* @brief Cargar en una estructura los datos de  UBX_NAV_PVT a partir de un arreglo de bytes
+* @param payload: arreglo del que se lee el payload
+* @param ubx: puntero a estructura ubx
 * @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
 */
-
 status_t proc_nav_pvt(const uchar * payload, ubx_t * ubx){
 	if(!payload || !ubx){
 		/*IMPRIMIR LOG*/
@@ -273,13 +280,12 @@ status_t proc_nav_pvt(const uchar * payload, ubx_t * ubx){
 	return ST_OK;
 }
 
-/**
-* @brief Cargar en una estructura los datos de UBX_TIM_ a partir de un arreglo de bytes
-* @param sentencia: arreglo de bytes
-* @param ubx: puntero a ubx_t
+/*
+* @brief Cargar en una estructura los datos de UBX_TIM_TOS a partir de un arreglo de bytes
+* @param payload: arreglo del que se lee el payload
+* @param ubx: puntero a estructura ubx
 * @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
 */
-
 status_t proc_tim_tos(const uchar * payload, ubx_t * ubx){
 	if(!payload || !ubx){
 		/*IMPRIMIR LOG*/
@@ -300,12 +306,11 @@ status_t proc_tim_tos(const uchar * payload, ubx_t * ubx){
 }
 
 /**
-* @brief Cargar en una estructura los datos de UBX_NAV_POS a partir de un arreglo de bytes
-* @param sentencia: arreglo de bytes
-* @param ubx: puntero a ubx_t
+* @brief Cargar en una estructura los datos de UBX_NAV_POSLLH a partir de un arreglo de bytes
+* @param payload: arreglo del que se lee el payload
+* @param ubx: puntero a estructura ubx
 * @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
 */
-
 status_t proc_nav_posllh(const uchar * payload, ubx_t * ubx){
 	if(!payload || !ubx){
 		/*IMPRIMIR LOG*/
@@ -321,13 +326,11 @@ status_t proc_nav_posllh(const uchar * payload, ubx_t * ubx){
 }
 
 /**
-* @brief Deja apuntando al arreglo de bytes a partir de los bytes de sincronismo
-* @param sentencia: puntero a arreglo de bytes
-* @param eof: puntero a bool, que indicará si se llegó o no a EOF
-* @param fin: puntero al archivo de entrada
-* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
+* @brief busca una sentencia UBX valida y la mueve al principio del buffer (no incluye caracteres de sincronismo)
+* @param sentencia: direccion de un puntero a uchar al que se le asignara la direccion de la sentencia ubx
+* @param fin: flujo de entrada
+* @return status_t: estado en que termino la funcion
 */
-
 /*Si el archivo tiene una sentencia UBX la función la carga en el buffer y devuelve un puntero "sentencia" al principio de la misma (no incluye los caracteres de sincronismo). Cuando el archivo se termina y no se encontraron sentencias devuelve eof=true y sentencia=NULL*/
 status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin){
 	static uchar buffer[BUFFER_LEN];
@@ -359,11 +362,12 @@ status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin){
 
 	/*busca y devuelve sentencias UBX validadas hasta llegar a EOF*/
 	while(get_sentence(buffer, fin)){ 
-		if(checksum(buffer)){   printf("checksum: ok\n"); 
+		if(checksum(buffer)){
+			/*IMPRIMIR LOG*/
 			*sentencia = buffer;
 			return ST_OK;
 		}else{
-			/*IMPRIMIR LOG*/ printf("checksum: nop\n"); 
+			/*IMPRIMIR LOG*/ 
 		}
 	}
 	
@@ -374,21 +378,19 @@ status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin){
 }
 
 /**
-* @brief Deja apuntando al arreglo de bytes a partir de los bytes de sincronismo
-* @param sentencia: puntero a arreglo de bytes
-* @param eof: puntero a bool, que indicará si se llegó o no a EOF
-* @param fin: puntero al archivo de entrada
-* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
+* @brief busca una sentencia UBX y la mueve al principio del buffer (no incluye caracteres de sincronismo)
+* @param buffer: direccion del buffer
+* @param fin: flujo de entrada
+* @return bool: true si encontró la sentencia. false si se terminó el archivo y no hay más sentencias para leer en el buffer.
 */
-
-/*busca una sentencia UBX y la mueve al principio del buffer (no incluye los caracteres de sincronismo)*/
 bool get_sentence(uchar * buffer, FILE * fin){
 	int i;
 
 	/*busca los dos caracteres de sincronismo en el buffer excepto en los dos últimos bytes*/
 	for(i = 0 ; i < BUFFER_LEN-2 ; i++){
 		if(buffer[i] == SYNC_CHAR1){ 
-			if(buffer[i + 1] == SYNC_CHAR2){ printf("encontró la sentencia %02x%02x\n le sigue %02x%02x (%02x%02x)\n",buffer[96], buffer[97], buffer[98], buffer[99],buffer[196], buffer[197]); 
+			if(buffer[i + 1] == SYNC_CHAR2){ 
+				/*IMPRIMIR LOG caracteres de sincronismo encontrados*/
 				/*mueve la sentencia al principio del buffer*/
 				load_buffer(buffer, i + 2, fin);
 				return true;
@@ -406,7 +408,13 @@ bool get_sentence(uchar * buffer, FILE * fin){
 	return get_sentence(buffer, fin);	
 }
 
-/* mueve al principio del buffer la sentencia ubicada en la posición 'pos' y completa el resto del buffer leyendo del archivo*/
+/**
+* @brief mueve la sentencia al principio del buffer y completa el resto del buffer leyendo del archivo
+* @param buffer: direccion del buffer
+* @param pos: posicion de la sentencia
+* @param fin: flujo de entrada
+* @return void
+*/
 void load_buffer(uchar * buffer, size_t pos, FILE * fin){
 	int i;
 	size_t leido;
@@ -416,13 +424,15 @@ void load_buffer(uchar * buffer, size_t pos, FILE * fin){
 		buffer[i] = buffer[pos + i];
 	}
 
+
 	/*sobreescribe la parte final del buffer*/
 	if((leido = fread_grind(buffer + BUFFER_LEN - pos, 1, pos, fin)) != pos){
 		/*completa el final del buffer con ceros si no hay más datos para leer del archivo*/
-		if(feof(fin)){ 
+		if(feof(fin)){ 	
 			for(i = BUFFER_LEN - pos + leido ; i < BUFFER_LEN ; i++){
 				buffer[i] = 0;
 			} 
+		/*IMPRIMIR LOG DEBUG eof, se completa buffer con ceros*/
 
 		}
 	}	
@@ -430,7 +440,14 @@ void load_buffer(uchar * buffer, size_t pos, FILE * fin){
 	return;
 }
 
-/*lee del archivo y valida los pámetros de fread*/
+ /**
+* @brief lee del archivo y valida los pámetros de fread
+* @param ptr: puntero a un bloque de memoria con un tamaño minimo de size*nmemb bytes
+* @param size: tamaño en bytes de cada elemento a leer
+* @param nmemb:	cantidad de elementos a leer
+* @param steam: puntero a FILE que especifica un flujo de entrada
+* @return size_t: true si el checksum concuerda
+*/
 size_t fread_grind(void *ptr, size_t size, size_t nmemb, FILE *stream){
 	size_t leido;
 	
@@ -439,21 +456,25 @@ size_t fread_grind(void *ptr, size_t size, size_t nmemb, FILE *stream){
 				/*IMPRIMIR LOG*/
 			}
 			if(feof(stream)){ 
-				/*IMPRIMIR LOG*/printf("%s\n","EOF (fread_grind)" );printf("leido = %d (fread_grind)\n",(int)leido );
+				/*IMPRIMIR LOG*/
 			}
 	}
 	return leido;
 }
 
-/*calcula el checksum*/
-bool checksum(const uchar *buffer){
+/**
+* @brief calcula el checksum
+* @param sentencia: sentencia en la que se va a calcular el  checksum 
+* @return bool : true si el checksum concuerda
+*/
+bool checksum(const uchar *sentencia){
 	uchar ck_a = 0,
 	      ck_b = 0;
 	long largo = 0;
 	int i;
 	
 	/*lee el largo*/
-	largo = letol(buffer, LARGO_POS, LARGO_LEN);
+	largo = letol(sentencia, LARGO_POS, LARGO_LEN);
 	
 	/*si el largo leído es mayor al espacio disponible en el buffer no se puede realizar la lectura*/
 	if(largo > BUFFER_LEN - ID_LEN - LARGO_LEN - CHECKSUM_LEN){
@@ -463,12 +484,12 @@ bool checksum(const uchar *buffer){
 
 	/*Calcula el checksum*/
 	for(i = 0 ; i < (PAYLOAD_POS + largo) ; i++){
-		ck_a = ck_a + buffer[i];
+		ck_a = ck_a + sentencia[i];
 		ck_b = ck_b + ck_a;
 	}
 
 	/*compara el checksum calculado*/
-	return (ck_a == buffer[i++] && ck_b == buffer[i])? true : false; /*al finalizar el 'for' anterior la posición 'i' corresponde al primer caracter de sincronismo*/
+	return (ck_a == sentencia[i++] && ck_b == sentencia[i])? true : false; /*al finalizar el 'for' anterior la posición 'i' corresponde al primer caracter de sincronismo*/
 }
 
 
