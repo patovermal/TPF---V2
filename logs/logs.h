@@ -77,6 +77,6 @@ typedef enum log_t {
 } log_t;
 
 /* prototipos  */
-status_t print_logs (log_t logs, FILE *flogs);
+status_t print_logs (log_t logs);
 
 #endif
