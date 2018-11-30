@@ -4,18 +4,15 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+#include "bits.h"
 #include "status.h"
 #include "fecha.h"
-#include "files.h"
-#include "bits.h"
 #include "gpx.h"
+#include "files.h"
 #include "list.h"
 #include "logs.h"
 
-
-#include "bits.h"
-
-#define BUFFER_LEN 500 /*La longitúd del buffer debe ser mayor a la máxima longitud posible para una sentencia UBX*/
+#define BUFFER_LEN 110 /*La longitúd del buffer debe ser mayor a la máxima longitud posible para una sentencia UBX*/
 
 /*valores fijos de sentencias UBX*/
 #define SYNC_CHAR1 			0xB5
