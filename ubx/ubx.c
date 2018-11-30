@@ -1,11 +1,9 @@
-s (256 sloc)  9.34 KB
 /**
 * @file ubx.c
-* @Author mauroarbuello
+* @Author mauroarbuello 	
 * @date 22/11/2019
 * @brief Funciones para UBX
 */
-
 #include "ubx.h"
 
 int main (void){
@@ -15,8 +13,13 @@ int main (void){
 	     *fout;
 	int i=0;
 	
-	fin = fopen("ubx-nav-posllh_short.ubx", "rb");
-	fout = fopen("prueba.txt", "wb");
+	if(!(fin = fopen("travesia.ubx", "rb"))){
+
+	}
+
+	if(!(fout = fopen("prueba.txt", "wb"))){
+
+	}
 
 	if(ferror(fin))
 		printf("error de lectura\n");
@@ -46,6 +49,161 @@ int main (void){
 	fclose(fout);
 
 	return EXIT_SUCCESS;
+}
+
+status_t print_ubx2gpx( Files_t * files, size_t maxlen){
+	
+	ubx2gpx_t funcion[] ={&pvt2gpx, &tos2gpx, &posllh2gpx};
+	ubx_t * ubx;
+	bool eof = false;
+	uchar * sentencia;
+	List lista;
+	status_t st;
+	gpx_t * gpx;
+	fecha_t fecha_cur;
+	hora_t hora_cur;
+
+	if (!files)
+		return ST_ERR_PUNT_NULL;
+
+	if (!files->fin || !files->fout)
+		return ST_ERR_PUNT_NULL;
+
+	srand(time(NULL));
+
+	if ((st = get_currentdate(&fecha_cur, &hora_cur)) != ST_OK){
+		print_logs(ERR_GET_FECHA, files->flog);
+		return st;
+	}
+	
+	if ((st = Make_list(&lista, maxlen)) != ST_OK){
+		print_logs(ERR_LIST_MAKE, files->flog);
+		return st;
+	}
+
+	if ( !(ubx = (ubx_t*) calloc(1, sizeof(ubx_t))) ){
+		print_logs( ERR_NO_MEM, files->flog );
+		return ST_ERR_NOMEM;
+	}
+
+	while(!eof){
+
+		readline_ubx(&sentencia, &eof, files->fin);
+
+		if ((st = proc_ubx(sentencia, ubx)) != ST_OK){
+			continue;
+		}
+
+		print_logs( DB_MSJ_DET , files->flog );
+		
+		switch ( ubx->id ){
+			case NAV_PVT:
+
+				fecha_cur = ubx->type.pvt.fecha;
+				hora_cur = ubx->type.pvt.hora;
+			
+				break;
+
+			case TIM_TOS:
+				
+				fecha_cur = ubx->type.tim_tos.fecha;
+				hora_cur = ubx->type.tim_tos.hora;
+				
+				continue;
+
+			case NAV_POSLLH:
+
+				break;
+
+			default:
+				continue;
+		}
+
+		
+		if (!(gpx = (gpx_t*) calloc( 1, sizeof(gpx_t)))){
+			free(ubx);
+			ubx = NULL;
+			Destroy_list(&lista, &free);
+	    	return ST_ERR_NOMEM;
+		}
+
+		if ( ( st = funcion[ubx->id]( ubx, gpx)) != ST_OK ) {
+			free(gpx);
+			gpx = NULL;
+			print_logs( WARN_GPX_CONV, files->flog );
+			continue;
+		}
+		
+		gpx->fecha = fecha_cur;
+		gpx->hora = hora_cur;
+
+		if ((st = AppendR_list( &lista, gpx)) != ST_OK){
+			print_log( files->flog , st );
+			free(gpx);
+			gpx = NULL;
+		}
+
+		print_logs( DB_MSJ_UP , files->flog );
+		
+		if ( rand()%10 <= 7 ){
+			print_trkptGPX( PopL_list( &lista ) ,files->fout);
+			Destroy_firstnode( &lista, &free );
+		}
+	}
+
+	while ( Cant_act_list( &lista)){
+		print_trkptGPX( PopL_list( &lista), files->fout);
+		Destroy_firstnode( &lista, &free);
+	}
+	
+	free(ubx);
+	Destroy_list( &lista , &free );
+	return ST_OK;
+}
+
+status_t pvt2gpx( ubx_t * ubx, gpx_t * gpx){
+
+	if ( !ubx || !gpx )
+		return ST_ERR_PUNT_NULL;
+
+	if(ubx->id != NAV_PVT)
+		return ST_ERR_ID_INVALIDO;
+
+	gpx->latitud = ubx->type.pvt.latitud;
+	gpx->longitud = ubx->type.pvt.longitud;
+	gpx->elevacion = ubx->type.pvt.elevacion;
+
+	return ST_OK;
+}
+
+/*se utilizaba en una implementación anterior y se conserva en caso de ser necesaria en futuras implementaciones*/
+status_t tos2gpx( ubx_t* ubx , gpx_t* gpx){
+	
+	if ( !ubx || !gpx )
+		return ST_ERR_PUNT_NULL;
+
+	if(ubx->id != TIM_TOS)
+		return ST_ERR_ID_INVALIDO;
+
+	gpx->fecha = ubx->type.tim_tos.fecha;
+	gpx->hora = ubx->type.tim_tos.hora;
+
+	return ST_OK;
+}
+
+status_t posllh2gpx( ubx_t* ubx , gpx_t* gpx){
+
+	if ( !ubx || !gpx )
+		return ST_ERR_PUNT_NULL;
+
+	if(ubx->id != NAV_POSLLH)
+		return ST_ERR_ID_INVALIDO;
+
+	gpx->latitud = ubx->type.posllh.latitud;
+	gpx->longitud = ubx->type.posllh.longitud;
+	gpx->elevacion = ubx->type.posllh.elevacion;
+
+	return ST_OK;
 }
 
 status_t proc_ubx(uchar * sentencia, ubx_t * ubx){
@@ -221,9 +379,6 @@ status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin){
 /*busca una sentencia UBX y la mueve al principio del buffer (no incluye los caracteres de sincronismo)*/
 bool get_sentence(uchar * buffer, FILE * fin){
 	int i;
-	
-	if (!buffer ||!fin)
-		return ST_ERR_PUNT_NULL;
 
 	/*busca los dos caracteres de sincronismo en el buffer excepto en los dos últimos bytes*/
 	for(i = 0 ; i < BUFFER_LEN-2 ; i++){
@@ -250,9 +405,6 @@ bool get_sentence(uchar * buffer, FILE * fin){
 void load_buffer(uchar * buffer, size_t pos, FILE * fin){
 	int i;
 	size_t leido;
-	
-	if (!buffer || !fin)
-		return ST_ERR_PUNT_NULL;
 
 	/*mueve la sentencia al principio del buffer*/
 	for(i = 0 ; i < BUFFER_LEN - pos ; i++){
@@ -262,7 +414,7 @@ void load_buffer(uchar * buffer, size_t pos, FILE * fin){
 	/*sobreescribe la parte final del buffer*/
 	if((leido = fread_grind(buffer + BUFFER_LEN - pos, 1, pos, fin)) != pos){
 		/*completa el final del buffer con ceros si no hay más datos para leer del archivo*/
-		if(feof(fin)){ printf("pos = %d\nleido = %d \n empieza a poner ceros en %02x%02x%02x%02x\n",(int)pos,(int)leido,buffer[BUFFER_LEN - pos + leido],buffer[BUFFER_LEN - pos + leido+1],buffer[BUFFER_LEN - pos + leido+2],buffer[BUFFER_LEN - pos + leido+3]);
+		if(feof(fin)){ 
 			for(i = BUFFER_LEN - pos + leido ; i < BUFFER_LEN ; i++){
 				buffer[i] = 0;
 			} 
@@ -276,9 +428,6 @@ void load_buffer(uchar * buffer, size_t pos, FILE * fin){
 /*lee del archivo y valida los pámetros de fread*/
 size_t fread_grind(void *ptr, size_t size, size_t nmemb, FILE *stream){
 	size_t leido;
-	
-	if (!ptr || !stream)
-		return ST_ERR_PUNT_NULL;
 	
 	if((leido = fread(ptr, size, nmemb, stream)) != nmemb){ 
 			if (ferror(stream)){
@@ -297,9 +446,6 @@ bool checksum(const uchar *buffer){
 	      ck_b = 0;
 	long largo = 0;
 	int i;
-	
-	if (!buffer)
-		return ST_ERR_PUNT_NULL;
 	
 	/*lee el largo*/
 	largo = letol(buffer, LARGO_POS, LARGO_LEN);
@@ -322,3 +468,5 @@ bool checksum(const uchar *buffer){
 		return false;	
 	}	
 }
+
+
