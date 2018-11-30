@@ -258,7 +258,7 @@ status_t proc_nmea( char* cadena , nmea_t * nmea , FILE* flogs){
 	status_t (*pfunc[])( nmea_t* , char* ) = { proc_rmc,  proc_zda,  proc_gga }; /*Puntero a funciones*/
 	char* inicio;
 	
-	if ( !cadena || !nmea )
+	if ( !cadena || !nmea ||!flogs )
 		return ST_ERR_PUNT_NULL;
 	
 	if ( !(inicio = strchr( cadena , NMEA_CHAR_START ) ) ){
@@ -398,6 +398,9 @@ status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
 	gpx_t* gpx;
 	fecha_t fecha_cur;
 	hora_t hora_cur;
+	
+	if (!files)
+		return ST_ERR_PUNT_NULL; 
 	
 	if ( st = get_currentdate( &fecha_cur , &hora_cur ) != ST_OK ){
 		print_logs( ERR_GET_FECHA , files->flog );
