@@ -221,6 +221,9 @@ status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin){
 /*busca una sentencia UBX y la mueve al principio del buffer (no incluye los caracteres de sincronismo)*/
 bool get_sentence(uchar * buffer, FILE * fin){
 	int i;
+	
+	if (!buffer ||!fin)
+		return ST_ERR_PUNT_NULL;
 
 	/*busca los dos caracteres de sincronismo en el buffer excepto en los dos últimos bytes*/
 	for(i = 0 ; i < BUFFER_LEN-2 ; i++){
@@ -247,6 +250,8 @@ bool get_sentence(uchar * buffer, FILE * fin){
 void load_buffer(uchar * buffer, size_t pos, FILE * fin){
 	int i,
 		leido;
+	if (!buffer || !fin)
+		return ST_ERR_PUNT_NULL;
 
 	/*mueve la sentencia al principio del buffer*/
 	for(i = 0 ; i < BUFFER_LEN - pos ; i++){
@@ -271,6 +276,9 @@ void load_buffer(uchar * buffer, size_t pos, FILE * fin){
 size_t fread_grind(void *ptr, size_t size, size_t nmemb, FILE *stream){
 	size_t leido;
 	
+	if (!ptr || !stream)
+		return ST_ERR_PUNT_NULL;
+	
 	if((leido = fread(ptr, size, nmemb, stream)) != nmemb){ 
 			if (ferror(stream)){
 				/*IMPRIMIR LOG*/
@@ -288,6 +296,9 @@ bool checksum(const uchar *buffer){
 	      ck_b = 0;
 	long largo = 0;
 	int i;
+	
+	if (!buffer)
+		return ST_ERR_PUNT_NULL;
 	
 	/*lee el largo*/
 	largo = letol(buffer, LARGO_POS, LARGO_LEN);
