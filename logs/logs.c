@@ -15,7 +15,9 @@
 * @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
 */
 
-status_t print_logs (log_t logs, FILE *flogs) {
+FILE *logs;
+
+status_t print_logs (log_t logs) {
     
     time_t now;     
     time(&now);     
