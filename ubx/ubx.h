@@ -1,12 +1,19 @@
 #ifndef UBX__H
 #define UBX__H
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-#include "../fecha/fecha.h"
-#include "../status/status.h"
-#include "../bits/bits.h"
+#include <time.h>
+#include "status.h"
+#include "fecha.h"
+#include "files.h"
+#include "bits.h"
+#include "gpx.h"
+#include "list.h"
+#include "logs.h"
+
+
+#include "bits.h"
 
 #define BUFFER_LEN 500 /*La longitúd del buffer debe ser mayor a la máxima longitud posible para una sentencia UBX*/
 
@@ -78,7 +85,7 @@ typedef enum ubx_id{
 	NAV_PVT,
 	TIM_TOS,
 	NAV_POSLLH
-}ubx_id;
+}ubx_id_t;
 
 /*Estructura para nav_pvt, con los datos a guardar*/
 typedef struct nav_pvt{
@@ -104,7 +111,7 @@ typedef struct nav_posllh{
 }nav_posllh_t;
 
 typedef struct ubx{
-	ubx_id	id;
+	ubx_id_t id;
 	union type {
    		nav_pvt_t pvt;
    		nav_posllh_t posllh;
@@ -112,12 +119,19 @@ typedef struct ubx{
 	}type;  
 }ubx_t;
 
-typedef status_t (*proc_ubx_t)(const uchar *, ubx_t *);
+typedef status_t (*proc_ubx_t)(const uchar * , ubx_t *);
+typedef status_t (*ubx2gpx_t)(ubx_t * , gpx_t * );
 
+status_t print_ubx2gpx( Files_t * files, size_t maxlen);
+status_t pvt2gpx( ubx_t* ubx , gpx_t* gpx);
+status_t tos2gpx( ubx_t* ubx , gpx_t* gpx);
+status_t posllh2gpx( ubx_t* ubx , gpx_t* gpx);
 
+status_t proc_ubx(uchar * sentencia, ubx_t * ubx);
 status_t proc_nav_posllh(const uchar * payload, ubx_t * pvt);
 status_t proc_tim_tos(const uchar * payload, ubx_t * pvt);
 status_t proc_nav_pvt(const uchar * payload, ubx_t * pvt);
+
 status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin);
 bool get_sentence(uchar * buffer, FILE * fin);
 void load_buffer(uchar * buffer, size_t pos, FILE * fin);
