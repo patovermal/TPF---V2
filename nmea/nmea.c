@@ -219,6 +219,9 @@ bool verify_checksum ( char* str_origen ){
 	char* temp;
 	unsigned char char_temp;
 	unsigned long int num_temp;
+	
+	if (!str_origen)
+		return false;
 
 	temp = strchr(str_origen,NMEA_TOKEN_CHKSUM);
 	
