@@ -169,6 +169,6 @@ bool verify_checksum ( char* );
 status_t rmc2gpx( nmea_t* nmea , gpx_t* gpx);
 status_t zda2gpx( nmea_t* nmea , gpx_t* gpx);
 status_t gga2gpx( nmea_t* nmea , gpx_t* gpx);
-status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen );
+status_t nmea2gpx( Files_t* files , size_t maxlen );
 
 #endif
