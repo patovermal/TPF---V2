@@ -388,6 +388,13 @@ status_t get_nmea_id ( const char *cadena , nmea_id* id ) {
 * @return status_t : el estado en el que termina la funcion (ST_OK si esta bien)
 */
 
+/**
+* @brief Lee, procesa e imprime en formato GPX sentencias NMEA del tipo GGA,RMC,ZDA
+* @param files : puntero a Files_t, que contiene fin, fout y flog
+* @param maxlen : maximo de nodos que puede tener la lista de mensajes gpx
+* @return status_t : el estado en el que termina la funcion (ST_OK si esta bien)
+*/
+
 status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
 	
 	status_t (*pfunc[])( nmea_t* , gpx_t* ) = { rmc2gpx,  zda2gpx,  gga2gpx }; /*Arreglo de punteros a funciones*/
@@ -399,8 +406,8 @@ status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
 	fecha_t fecha_cur;
 	hora_t hora_cur;
 	
-	if (!files)
-		return ST_ERR_PUNT_NULL; 
+	if ( !files || !fecha_cur )
+		return ST_ERR_PUNT_NULL;
 	
 	if ( st = get_currentdate( &fecha_cur , &hora_cur ) != ST_OK ){
 		print_logs( ERR_GET_FECHA , files->flog );
@@ -413,9 +420,6 @@ status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
 	}
 	
 	srand(time(NULL));
-	
-	if ( !files || !fecha_cur )
-		return ST_ERR_PUNT_NULL;
 	
 	if (  !( nmea = (nmea_t*)calloc(1,sizeof(nmea_t)) ) ){
 		print_logs( ERR_NO_MEM, files->flog );
@@ -461,7 +465,7 @@ status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
 		gpx->fecha = *fecha_cur;
 		
 		if ( (st = AppendR_list( &lista , gpx )) != ST_OK ){
-			print_log( files->flog , st );
+			print_logs( ERR_LIST_APPEND , files->flog );
 			free(gpx);
 			gpx = NULL;
 		}
