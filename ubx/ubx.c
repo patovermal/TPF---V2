@@ -6,57 +6,8 @@
 */
 #include "ubx.h"
 
-FILE * flog;
 
-int main (void){
-	uchar *sentencia;
-	bool eof = false;
-	FILE *fin,
-	     *fout;
-	int i=0;
-	
-	printf("%s\n", "llegó hasta acá");
-
-
-	if(!(fin = fopen("travesia.ubx", "rb"))){
-		return EXIT_FAILURE;
-	}
-
-	if(!(fout = fopen("prueba.txt", "wb"))){
-		return EXIT_FAILURE;
-	}
-
-	if(!(flog = fopen("log.txt", "wb"))){
-		return EXIT_FAILURE;
-	}
-
-	if(ferror(fin))
-		printf("error de lectura\n");
-
-	printf("%s\n", "llegó hasta acá");
-
-	while(!eof){
-		if(readline_ubx(&sentencia, &eof, fin) != ST_OK){
-			/*PRINT LOG*/
-			printf("puntero nulo\n");
-			break;
-		}
-
-		if(sentencia){
-			i++;
-			fwrite(sentencia, 1, 98, fout);
-		}
-	}
-
-	printf("se leyeron %d setencias UBX.\n", i);
- 
-	fclose(fin);
-	fclose(fout);
-
-	return EXIT_SUCCESS;
-}
-
-status_t print_ubx2gpx( Files_t * files, size_t maxlen){
+status_t ubx2gpx( Files_t * files, size_t maxlen){
 	
 	ubx2gpx_t funcion[] ={&pvt2gpx, &tos2gpx, &posllh2gpx};
 	ubx_t * ubx;
