@@ -119,7 +119,7 @@ typedef struct ubx{
 typedef status_t (*proc_ubx_t)(const uchar * , ubx_t *);
 typedef status_t (*ubx2gpx_t)(ubx_t * , gpx_t * );
 
-status_t print_ubx2gpx( Files_t * files, size_t maxlen);
+status_t ubx2gpx( Files_t * files, size_t maxlen);
 status_t pvt2gpx( ubx_t* ubx , gpx_t* gpx);
 status_t tos2gpx( ubx_t* ubx , gpx_t* gpx);
 status_t posllh2gpx( ubx_t* ubx , gpx_t* gpx);
