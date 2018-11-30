@@ -17,7 +17,9 @@
  * @brief Estructura que contiene los 3 punteros a archivos
  */
 typedef struct Files{
-	FILE * fin, * fout, * flog;
+	FILE * fin; 
+	FILE * fout;
+	FILE * flog;
 }Files_t;
 
 #endif

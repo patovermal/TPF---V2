@@ -15,15 +15,20 @@
 * @return status_t : el estado en el que termino la función (ST_OK si salio bien)
 */
 
-status_t  proc_args(int argc, char* argv[],config_t* config){
+status_t proc_args(int argc, char* argv[],config_t* config){
 	
 	char* ctemp;
 	size_t ntemp;
-	status_t st = ST_OK ;
-	bool boolprot=false;
 	size_t i;
 	
+	if ( !argv || !config )
+		return ST_ERR_PUNT_NULL;
+	
 	config->help = false;
+	config->bool_prot = false;
+	config->bool_fin = false;
+	config->bool_fout = false;
+	config->bool_flog = false;
 	config->maxlen = 0;
 	
 	for(i=1;i<argc;i++){
@@ -35,63 +40,52 @@ status_t  proc_args(int argc, char* argv[],config_t* config){
 			else if( !strcmp(argv[i],STR_NAME_S) || !strcmp(argv[i],STR_NAME_L) ){
 				if ( (i+1) < argc ){
 					strncpy(config->nombre,argv[i+1],MAX_NOMBRE);
-				}
-				else {st = ST_ERR_NO_NAME; /*Printlog*/
+					config->nombre[MAX_NOMBRE] = '\0';
 				}
 			}
-
 			else if( !strcmp(argv[i],STR_PROTOCOL_S) || !strcmp(argv[i],STR_PROTOCOL_L) ){
 				if ( (i+1) < argc){
 					if ( !strcmp(argv[i+1], STR_NMEA ) ){
 						config->protocol = P_NMEA;
-						boolprot=true;
+						config->bool_prot = true;
 					}
 					else if ( !strcmp(argv[i+1], STR_UBX ) ){
 						config->protocol = P_UBX;
-						boolprot=true;
+						config->bool_prot = true;
 					}						
-				}
-				else {	st = ST_ERR_NO_PROTOCOL; /*Printlog*/
 				}
 			}
 			else if( !strcmp(argv[i],STR_INFILE_S) || !strcmp(argv[i],STR_INFILE_L) ){
 				if ( (i+1)<argc ){
 					strncpy( config->fin , argv[i+1] , MAX_NOMBRE );
-				}
-				else {	st = ST_ERR_NO_LOGFILE; /*Printlog*/
+					config->fin[MAX_NOMBRE] = '\0';
+					config->bool_fin = true;
 				}
 			}
 			else if( !strcmp(argv[i],STR_OUTFILE_S) || !strcmp(argv[i],STR_OUTFILE_L) ){
 				if ( (i+1)<argc ){
 					strncpy( config->fout, argv[i+1] , MAX_NOMBRE );
-				}
-				else {	st = ST_ERR_NO_LOGFILE; /*Printlog*/
+					config->fout[MAX_NOMBRE] = '\0';
+					config->bool_fout = true;
 				}
 			}
 			else if( !strcmp(argv[i],STR_LOGFILE_S) || !strcmp(argv[i],STR_LOGFILE_L) ){
 				if ( (i+1)<argc ){
 					strncpy( config->flog , argv[i+1] , MAX_NOMBRE );
-				}
-				else {	st = ST_ERR_NO_LOGFILE; /*Printlog*/
+					config->flog[MAX_NOMBRE] = '\0';
+					config->bool_flog = true;
 				}
 			}
 			else if( !strcmp(argv[i],STR_MAXLEN_S)  || !strcmp(argv[i],STR_MAXLEN_L) ){
 				if ( (i+1)<argc ){
 					ntemp = strtoul( argv[i+1] , &ctemp , 10 );
-					if ( ctemp != '\0'){
-						/* st = ST_ERR_NO_MAXLEN; */ /*Printlog*/
+					if ( ctemp == '\0'){
+						config->maxlen = ntemp;
 					}
-					else { config->maxlen = ntemp;
-					}
-				}	
-				else {	st = ST_ERR_NO_LOGFILE; /*Printlog*/
 				}
 			}
 		}
 	}
-	
-/* 	if ( boolprot == false )
-		return ST_ERR_NO_PROTOCOL; */ /*Printlog*/
 	
 	return ST_OK;
 }

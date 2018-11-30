@@ -76,6 +76,7 @@ status_t proc_rmc(nmea_t* nmea, char* cadena){
 	char* cad_arr[NMEA_DELIM_CANT_MAX];
 	status_t st;
 	char* ctemp;
+	int ntemp;
 	
 	if ( !cadena || !nmea )
 		return ST_ERR_PUNT_NULL;
@@ -87,10 +88,10 @@ status_t proc_rmc(nmea_t* nmea, char* cadena){
 		return st;
 
 
-	/* 	if ( strcmp( cad_arr[NMEA_RMC_ST_POS] , STR_RMC_ACTIVE ) == 0 )
+	if ( strcmp( cad_arr[NMEA_RMC_ST_POS] , STR_RMC_ACTIVE ) == 0 )
 		nmea->type.rmc.status = true;
 	else 
-		return ST_ERR_SENTENCIA_INVALIDA; */
+		return ST_ERR_SENTENCIA_INVALIDA;
 
 	if ( ( st = str2lat( cad_arr[NMEA_RMC_LAT_POS], cad_arr[NMEA_RMC_LAT_POS + 1] , &nmea->type.rmc.latitud ) ) != ST_OK )
 		return st;
@@ -110,6 +111,9 @@ status_t proc_rmc(nmea_t* nmea, char* cadena){
 	
 	if ( ( st = str2fecha( cad_arr[NMEA_RMC_FECHA_POS] , &nmea->type.rmc.fecha ) ) != ST_OK )
 		return st;
+	ntemp = nmea->type.rmc.fecha.year;
+	nmea->type.rmc.fecha.year = nmea->type.rmc.fecha.day + EPOCH_YY_RMC;
+	nmea->type.rmc.fecha.day = ntemp;
 	
 	nmea->type.rmc.desv_mag = strtod( cad_arr[NMEA_RMC_DESV_POS] , &ctemp );
 	
@@ -150,7 +154,7 @@ status_t proc_gga(nmea_t* nmea, char* cadena){
 		return st;
 	}
 	
-/* 	nmea->type.gga.calidad = strtoul( cad_arr[NMEA_GGA_CAL_POS] , &ctemp, 10 );
+	nmea->type.gga.calidad = strtoul( cad_arr[NMEA_GGA_CAL_POS] , &ctemp, 10 );
 	if ( *ctemp != '\0' ){
 		return ST_ERR_SENTENCIA_INVALIDA;
 	}
@@ -177,7 +181,7 @@ status_t proc_gga(nmea_t* nmea, char* cadena){
 	nmea->type.gga.sep_geoide = strtod( cad_arr[NMEA_GGA_SEP_POS] , &ctemp );
 	
 	if ( *ctemp != '\0' )
-		return ST_ERR_SENTENCIA_INVALIDA; */
+		return ST_ERR_SENTENCIA_INVALIDA;
 	
 	return ST_OK;	
 	
@@ -256,28 +260,28 @@ status_t proc_nmea( char* cadena , nmea_t * nmea , FILE* flogs){
 	status_t (*pfunc[])( nmea_t* , char* ) = { proc_rmc,  proc_zda,  proc_gga }; /*Puntero a funciones*/
 	char* inicio;
 	
-	if ( !cadena || !nmea ||!flogs )
+	if ( !cadena || !nmea || !flogs )
 		return ST_ERR_PUNT_NULL;
 	
 	if ( !(inicio = strchr( cadena , NMEA_CHAR_START ) ) ){
-		print_logs ( ERR_INV_NMEA , flogs );
+		print_logs( ERR_INV_NMEA , flogs );
 		return ST_ERR_SENTENCIA_INVALIDA;
 	}
 	
 	if ( verify_checksum( inicio ) == false ){
-		print_logs(ERR_INV_CHKSUM, flogs);
+		print_logs( ERR_INV_CHKSUM , flogs );
 		return ST_ERR_SENTENCIA_INVALIDA;
 	}
 
 	if ( ( st = get_nmea_id( inicio , &(nmea->id) ) ) != ST_OK ){
-		print_logs(WARN_ID_DESC, flogs);
+		print_logs( WARN_ID_DESC , flogs );
 		return st;
 	}
 	
 	print_logs( DB_ID_DETECT , flogs);
 	
 	if ( ( st = (*pfunc[ nmea->id ])( nmea , inicio ) ) != ST_OK ){
-		print_logs(ERR_INV_NMEA, flogs);
+		print_logs( ERR_INV_NMEA , flogs );
 		return st;
 	}
 	
@@ -397,11 +401,11 @@ status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
 	fecha_t fecha_cur;
 	hora_t hora_cur;
 	
-	if ( !files || !fecha_cur )
+	if ( !files )
 		return ST_ERR_PUNT_NULL;
 	
-	if ( st = get_currentdate( &fecha_cur , &hora_cur ) != ST_OK ){
-		print_logs( ERR_GET_FECHA , files->flog );
+	if ( (st = get_currentdate( &fecha_cur , &hora_cur ) ) != ST_OK ){
+		print_logs( ERR_GET_DATE , files->flog );
 		return st;
 	}
 	
@@ -428,9 +432,11 @@ status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
 		switch ( nmea->id ){
 			case ZDA:
 				fecha_cur = nmea->type.zda.fecha;
+				print_logs( DB_DATE_ACT , files->flog );
 				break;
 			case RMC:
 				fecha_cur = nmea->type.rmc.fecha;
+				print_logs( DB_DATE_ACT , files->flog );
 				break;
 			case GGA:
 				break;
@@ -443,6 +449,7 @@ status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
 			free(nmea);
 			nmea = NULL;
 			Destroy_list( &lista , &free );
+			print_logs( ERR_NO_MEM, files->flog );
 	    	return ST_ERR_NOMEM;
 		}
 		
@@ -453,19 +460,26 @@ status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
 			continue;
 		}
 		
-		gpx->fecha = *fecha_cur;
+		gpx->fecha = fecha_cur;
 		
 		if ( (st = AppendR_list( &lista , gpx )) != ST_OK ){
-			print_logs( ERR_LIST_APPEND , files->flog );
+			if ( st == ST_ERR_LIST_FULL ){
+				print_logs( WARN_FULL_LIST , files->flog );
+			}
+			else{
+				print_logs( ERR_LIST_APPEND , files->flog );
+			}
 			free(gpx);
 			gpx = NULL;
 		}
+		else {
+			print_logs( DB_MSJ_UP , files->flog );
+		}
 		
-		print_logs( DB_MSJ_UP , files->flog );
-		
-		if ( rand()%10 <= 7 ){
+		if ( rand()%10 <= 5 ){
 			print_trkptGPX( PopL_list( &lista ) , files->fout );
 			Destroy_firstnode( &lista, &free );
+			print_logs( DB_MSJ_PRINT , files->flog );
 		}
 		
 	}
@@ -473,6 +487,7 @@ status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
 	while ( Cant_act_list( &lista ) ){
 		print_trkptGPX( PopL_list( &lista ) , files->fout );
 		Destroy_firstnode( &lista, &free );
+		print_logs( DB_MSJ_PRINT , files->flog );
 	}
 	
 	free(nmea);

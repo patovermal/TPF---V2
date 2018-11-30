@@ -19,7 +19,7 @@ status_t print_logs (log_t logs, FILE *flogs) {
     
     time_t now;     
     time(&now);     
-    char * date =ctime(&now);
+    char * date = ctime(&now);
     
     if (!flogs)
         return ST_ERR_PUNT_NULL;
@@ -47,7 +47,7 @@ status_t print_logs (log_t logs, FILE *flogs) {
             break;
 		
 		case ERR_GET_DATE:
-			fprintf(flogs, "%s: %s\n", MSJ_ERR_PREFIJO, MSJ_ERR_GET_FECHA);
+			fprintf(flogs, "%s: %s\n", MSJ_ERR_PREFIJO, MSJ_ERR_GET_DATE);
             break;
 			
 		case ERR_NO_MEM:
@@ -56,6 +56,18 @@ status_t print_logs (log_t logs, FILE *flogs) {
 		
 		case ERR_LIST_MAKE:
 			fprintf(flogs, "%s: %s\n", MSJ_ERR_PREFIJO, MSJ_ERR_LIST_MAKE);
+            break;
+			
+		case ERR_LIST_APPEND:
+			fprintf(flogs, "%s: %s\n", MSJ_ERR_PREFIJO, MSJ_ERR_LIST_APPEND);
+            break;
+			
+		case ERR_NO_PROTOCOL:
+			fprintf(flogs, "%s: %s\n", MSJ_ERR_PREFIJO, MSJ_ERR_NO_PROTOCOL);
+            break;
+		
+		case ERR_PROC_FILE:
+			fprintf(flogs, "%s: %s\n", MSJ_ERR_PREFIJO, MSJ_ERR_PROC_FILE);
             break;
 		
         /* Warnings (WARN) */
@@ -74,6 +86,10 @@ status_t print_logs (log_t logs, FILE *flogs) {
 		case WARN_GPX_CONV:
             fprintf(flogs, "%s: %s\n", MSJ_WARN_PREFIJO, MSJ_WARN_GPX_CONV);
             break;
+			
+		case WARN_ARG_MISS:
+            fprintf(flogs, "%s: %s\n", MSJ_WARN_PREFIJO, MSJ_WARN_ARG_MISS);
+            break;
 
         /* Debug (DB) */
         case DB_BYTES_SYNC:
@@ -90,6 +106,14 @@ status_t print_logs (log_t logs, FILE *flogs) {
 
         case DB_MSJ_UP:
             fprintf(flogs, "%s: %s\n", MSJ_DEBUG_PREFIJO, MSJ_DB_MSJ_UP);
+            break;
+		
+		case DB_MSJ_PRINT:
+            fprintf(flogs, "%s: %s\n", MSJ_DEBUG_PREFIJO, MSJ_DB_MSJ_PRINT);
+            break;
+		
+		case DB_DATE_ACT:
+            fprintf(flogs, "%s: %s\n", MSJ_DEBUG_PREFIJO, MSJ_DB_DATE_ACT);
             break;
     }
     return ST_OK;

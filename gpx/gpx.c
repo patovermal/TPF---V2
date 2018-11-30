@@ -19,13 +19,11 @@ void print_headerGPX(FILE * fout){
 		return;
 	
 	/*imprimir primer linea*/
-	fprintf(fout, "%c%c %s %s %c%c%s%c %s%c%c%s%c%c%c\n\n",
-	CHAR_START, CHAR_QUESTION,
+	fprintf( fout , "%c%c %s %s %c%c%s%c %s%c%c%s%c%c%c\n\n" , CHAR_START, CHAR_QUESTION,
 	MSJ_XML,
 	MSJ_VERSION, CHAR_EQUAL, CHAR_COMILLAS, VERSION_XML, CHAR_COMILLAS,
-	MSJ_ENCODING, CHAR_EQUAL, CHAR_COMILLAS, ENCODING, CHAR_COMILLAS
-	CHAR_QUESTION, CHAR_END
-	);
+	MSJ_ENCODING, CHAR_EQUAL, CHAR_COMILLAS, ENCODING, CHAR_COMILLAS ,
+	CHAR_QUESTION, CHAR_END	);
 	/*imprimir la segunda linea*/
 	fprintf(fout, "%c%s %s %c%c%s%c %s %c%c%s%c %s %c%c%s%c%c\n",
 	CHAR_START,

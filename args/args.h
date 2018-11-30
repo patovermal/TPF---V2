@@ -14,6 +14,7 @@
 #include "../status/status.h"
 
 #define MAX_NOMBRE 50
+#define MAX_LEN_DEFAULT 1
 
 #define PROTOCOL_CANT	2
 
@@ -60,9 +61,13 @@ typedef struct config{
 	bool help;
 	char nombre[MAX_NOMBRE+1];
 	protocol_t protocol;
+	bool bool_prot;
 	char fin[MAX_NOMBRE+1];
+	bool bool_fin;
 	char fout[MAX_NOMBRE+1];
+	bool bool_fout;
 	char flog[MAX_NOMBRE+1];
+	bool bool_flog;
 	size_t maxlen;
 }config_t;
 

@@ -48,7 +48,7 @@ void Destroy_firstnode( List* , void(*)(void*) );
 void Destroy_list( List* , void(*)(void*) );
 void* PopL_list( List* );
 void* PopR_list( List* );
-size_t Cant_act_list( List* lista )
+size_t Cant_act_list( List* lista );
 bool Full_list( List* lista );
 
 #endif

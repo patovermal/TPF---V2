@@ -28,7 +28,7 @@
 
 #define NMEA_DELIM_CHAR ','
 #define NMEA_DELIM_CANT_MAX 30
-#define NMEA_DELIM_CANT_MIN 10
+#define NMEA_DELIM_CANT_MIN 5
 
 #define NMEA_ID_LEN 3
 
@@ -60,6 +60,8 @@
 #define NMEA_RMC_ANG_POS	8
 #define NMEA_RMC_FECHA_POS	9
 #define NMEA_RMC_DESV_POS	10
+
+#define EPOCH_YY_RMC 2000
 
 #define STR_RMC_ACTIVE "A"
 #define STR_RMC_VOID "V"

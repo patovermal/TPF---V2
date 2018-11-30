@@ -13,14 +13,14 @@
 * @return Node* : Un puntero al nodo creado, NULL si falla
 */
 
-Node* Make_node( void* dato ){
+Node* Make_node( void* dato ) {
 	
 	Node* nodo;
 	
 	if ( !dato )
 		return NULL;
 	
-	if ( !( nodo = (Node*)malloc(sizeof(Node)) ) )
+	if ( !( nodo = (Node*)malloc( sizeof(Node) ) ) )
 		return NULL;
 
 	nodo->act = dato;
@@ -37,7 +37,7 @@ Node* Make_node( void* dato ){
 * @return void : nada
 */
 
-void Destroy_node( Node** nodo, void (*destruir)(void*) ){
+void Destroy_node( Node** nodo, void (*destruir)(void*) ) {
 	
 	if ( !nodo || !destruir || !(*nodo) )
 		return;
@@ -58,7 +58,7 @@ void Destroy_node( Node** nodo, void (*destruir)(void*) ){
 * @return status_t : el estado en el que terminó la función (si fue todo bien ST_OK)
 */
 
-status_t Make_list(List* lista, size_t max){
+status_t Make_list(List* lista, size_t max) {
 	
 	if ( !lista )
 		return ST_ERR_PUNT_NULL;
@@ -78,7 +78,7 @@ status_t Make_list(List* lista, size_t max){
 * @return status_t : el estado en el que terminó la función (si fue todo bien ST_OK)
 */
 
-status_t AppendL_list( List* lista, void* dato ){
+status_t AppendL_list( List* lista, void* dato ) {
 	
 	Node* nodo;
 	
@@ -107,7 +107,7 @@ status_t AppendL_list( List* lista, void* dato ){
 * @return status_t : el estado en el que terminó la función (si fue todo bien ST_OK)
 */
 
-status_t AppendR_list( List* lista, void* dato ){
+status_t AppendR_list( List* lista, void* dato ) {
 	
 	Node* nodo;
 	Node* aux;
@@ -149,7 +149,7 @@ status_t AppendR_list( List* lista, void* dato ){
 * @return void : nada
 */
 
-void Destroy_firstnode( List* lista, void(*destruir)(void*) ){
+void Destroy_firstnode( List* lista, void(*destruir)(void*) ) {
 	
 	Node* aux;
 	
@@ -171,7 +171,7 @@ void Destroy_firstnode( List* lista, void(*destruir)(void*) ){
 * @return void: nada
 */
 
-void Destroy_list( List* lista , void(*destruir)(void*) ){
+void Destroy_list( List* lista , void(*destruir)(void*) ) {
 	
 	if( !lista || !destruir || !(lista->ptr) ){
 		lista->cant_actual = 0;
@@ -195,7 +195,7 @@ void Destroy_list( List* lista , void(*destruir)(void*) ){
 * @return void* : puntero al dato
 */
 
-void* PopL_list( List* lista ){
+void* PopL_list( List* lista ) {
 	
 	if ( !lista || !(lista->ptr) )
 		return NULL;
@@ -210,7 +210,7 @@ void* PopL_list( List* lista ){
 * @return void* : puntero al dato
 */
 
-void* PopR_list( List* lista ){
+void* PopR_list( List* lista ) {
 	
 	Node* aux;
 	
@@ -234,7 +234,7 @@ void* PopR_list( List* lista ){
 * @return size_t : cantidad de nodos en la lista (si la lista es NULL devuelve 0)
 */
 
-size_t Cant_act_list( List* lista ){
+size_t Cant_act_list( List* lista ) {
 	
 	if ( !lista )
 		return 0;
@@ -249,7 +249,7 @@ size_t Cant_act_list( List* lista ){
 * @return size_t : cantidad de nodos en la lista (si la lista es NULL devuelve 0)
 */
 
-bool Full_list( List* lista ){
+bool Full_list( List* lista ) {
 	
 	if ( !lista )
 		return false;
