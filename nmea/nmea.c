@@ -151,7 +151,6 @@ status_t proc_gga(nmea_t* nmea, char* cadena){
 	}
 	
 /* 	nmea->type.gga.calidad = strtoul( cad_arr[NMEA_GGA_CAL_POS] , &ctemp, 10 );
-
 	if ( *ctemp != '\0' ){
 		return ST_ERR_SENTENCIA_INVALIDA;
 	}
@@ -160,10 +159,8 @@ status_t proc_gga(nmea_t* nmea, char* cadena){
 	}
 	
 	nmea->type.gga.cant_satelites = strtoul( cad_arr[NMEA_GGA_SAT_POS] , &ctemp, 10 );
-
 	if ( *ctemp != '\0' )
 		return ST_ERR_SENTENCIA_INVALIDA;
-
 	if ( nmea->type.gga.cant_satelites < 0  || nmea->type.gga.cant_satelites > MAX_SATELITES )
 		return ST_ERR_SENTENCIA_INVALIDA;
 	
@@ -249,6 +246,7 @@ bool verify_checksum ( char* str_origen ){
 * @brief Procesa una sentencia NMEA
 * @param cadena : sentencia NMEA (char*)
 * @param nmea : puntero a nmea_t (nmea_t*)
+* @param flogs : puntero al archivo de logs
 * @return status_t : el estado en el que termino (ST_OK si todo fue bien)
 */
 
@@ -380,13 +378,6 @@ status_t get_nmea_id ( const char *cadena , nmea_id* id ) {
 	return ST_ERR_ID_INVALIDO;
 
 }
-
-/**
-* @brief Lee, procesa e imprime en formato GPX sentencias NMEA del tipo GGA,RMC,ZDA
-* @param files : puntero a Files_t, que contiene fin, fout y flog
-* @param maxlen : maximo de nodos que puede tener la lista de mensajes gpx
-* @return status_t : el estado en el que termina la funcion (ST_OK si esta bien)
-*/
 
 /**
 * @brief Lee, procesa e imprime en formato GPX sentencias NMEA del tipo GGA,RMC,ZDA
