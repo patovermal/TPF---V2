@@ -60,6 +60,7 @@ int main(int argc, char* argv[]){
 	}
 	else {
 		print_logs( ERR_NO_PROTOCOL , stderr );
+		return EXIT_FAILURE;
 	}
 
 	if (!strcmp( config.fout , STR_STDOUT ) || !config.bool_fout ){
