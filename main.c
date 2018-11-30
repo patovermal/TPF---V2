@@ -17,7 +17,7 @@ int main(int argc, char* argv[]){
 	config_t config;
 	status_t st;
 	Files_t files;
-	status_t (*pfunc[])( Files_t * , size_t ) = { freadprint_nmea2gpx /* , freadprint_ubx2gpx */ }; /*Puntero a funciones*/
+	status_t (*pfunc[])( Files_t * , size_t ) = { freadprint_nmea2gpx , print_ubx2gpx }; /*Puntero a funciones*/
 	Gpx_mtdt metadata;
 	
 	strncpy( config.nombre , DEFAULT_NOMBRE , MAX_NOMBRE );
