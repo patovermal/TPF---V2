@@ -6,6 +6,8 @@
 */
 #include "ubx.h"
 
+FILE * flog;
+
 int main (void){
 	uchar *sentencia;
 	bool eof = false;
@@ -13,22 +15,25 @@ int main (void){
 	     *fout;
 	int i=0;
 	
-	if(!(fin = fopen("travesia.ubx", "rb"))){
+	printf("%s\n", "llegó hasta acá");
 
+
+	if(!(fin = fopen("travesia.ubx", "rb"))){
+		return EXIT_FAILURE;
 	}
 
 	if(!(fout = fopen("prueba.txt", "wb"))){
+		return EXIT_FAILURE;
+	}
 
+	if(!(flog = fopen("log.txt", "wb"))){
+		return EXIT_FAILURE;
 	}
 
 	if(ferror(fin))
 		printf("error de lectura\n");
 
-	if(!fin){
-		printf("%s\n", "no existe el archivo de entrada");
-		return EXIT_FAILURE;
-	}
-
+	printf("%s\n", "llegó hasta acá");
 
 	while(!eof){
 		if(readline_ubx(&sentencia, &eof, fin) != ST_OK){
@@ -72,7 +77,7 @@ status_t print_ubx2gpx( Files_t * files, size_t maxlen){
 	srand(time(NULL));
 
 	if ((st = get_currentdate(&fecha_cur, &hora_cur)) != ST_OK){
-		print_logs(ERR_GET_FECHA, files->flog);
+		print_logs(ERR_GET_DATE, files->flog);
 		return st;
 	}
 	
@@ -138,7 +143,7 @@ status_t print_ubx2gpx( Files_t * files, size_t maxlen){
 		gpx->hora = hora_cur;
 
 		if ((st = AppendR_list( &lista, gpx)) != ST_OK){
-			print_log( files->flog , st );
+			print_logs(st, files->flog);
 			free(gpx);
 			gpx = NULL;
 		}
@@ -379,9 +384,6 @@ status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin){
 /*busca una sentencia UBX y la mueve al principio del buffer (no incluye los caracteres de sincronismo)*/
 bool get_sentence(uchar * buffer, FILE * fin){
 	int i;
-	
-	if (!buffer || !fin)
-		return ST_ERR_PUNT_NULL;
 
 	/*busca los dos caracteres de sincronismo en el buffer excepto en los dos últimos bytes*/
 	for(i = 0 ; i < BUFFER_LEN-2 ; i++){
@@ -408,9 +410,6 @@ bool get_sentence(uchar * buffer, FILE * fin){
 void load_buffer(uchar * buffer, size_t pos, FILE * fin){
 	int i;
 	size_t leido;
-	
-	if (!buffer || !fin)
-		return ST_ERR_PUNT_NULL;
 
 	/*mueve la sentencia al principio del buffer*/
 	for(i = 0 ; i < BUFFER_LEN - pos ; i++){
@@ -435,9 +434,6 @@ void load_buffer(uchar * buffer, size_t pos, FILE * fin){
 size_t fread_grind(void *ptr, size_t size, size_t nmemb, FILE *stream){
 	size_t leido;
 	
-	if (!ptr ||!stream)
-		return ST_ERR_PUNT_NULL;
-	
 	if((leido = fread(ptr, size, nmemb, stream)) != nmemb){ 
 			if (ferror(stream)){
 				/*IMPRIMIR LOG*/
@@ -456,16 +452,14 @@ bool checksum(const uchar *buffer){
 	long largo = 0;
 	int i;
 	
-	if (!buffer)
-		return ST_ERR_PUNT_NULL;
-	
 	/*lee el largo*/
 	largo = letol(buffer, LARGO_POS, LARGO_LEN);
 	
 	/*si el largo leído es mayor al espacio disponible en el buffer no se puede realizar la lectura*/
-	if(largo > BUFFER_LEN - ID_LEN - LARGO_LEN - CHECKSUM_LEN)
+	if(largo > BUFFER_LEN - ID_LEN - LARGO_LEN - CHECKSUM_LEN){
 		/*IMPRIMIR LOG*/
 		return false;
+	}
 
 	/*Calcula el checksum*/
 	for(i = 0 ; i < (PAYLOAD_POS + largo) ; i++){
@@ -474,11 +468,7 @@ bool checksum(const uchar *buffer){
 	}
 
 	/*compara el checksum calculado*/
-	if (ck_a == buffer[i++] && ck_b == buffer[i]){ /*al finalizar el 'for' anterior la posición 'i' corresponde al primer caracter de sincronismo*/
-		return true;
-	}else{
-		return false;	
-	}	
+	return (ck_a == buffer[i++] && ck_b == buffer[i])? true : false; /*al finalizar el 'for' anterior la posición 'i' corresponde al primer caracter de sincronismo*/
 }
 
 
