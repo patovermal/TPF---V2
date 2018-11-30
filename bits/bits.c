@@ -1,6 +1,6 @@
 /**
 * @file logs.h
-* @author pulpo
+* @author mauroarbuello
 * @date 24/11/2018
 * @brief Funciones que operan con bits.
 */
@@ -9,10 +9,10 @@
 
 /**
 * @brief Convierte de little-endian a entero sin signo.
-* @param string : arreglo de bytes
-* @param pos : posicion del inicio del número a convertir en el arreglo
-* @param len : largo del numero a convertir
-* @return ulong : numero convertido
+* @param string: arreglo de bytes sin signo.
+* @param pos: posicion del del número a convertir en el arreglo.
+* @param len: largo en bytes del numero a convertir.
+* @return ulong: numero convertido.
 */
 ulong letol(const uchar *string, size_t pos, size_t len){
 	ulong entero = 0;
@@ -30,10 +30,10 @@ ulong letol(const uchar *string, size_t pos, size_t len){
 
 /**
 * @brief Convierte de little-endian a entero con signo.
-* @param string : arreglo de bytes
-* @param pos : posicion del inicio del número a convertir en el arreglo
-* @param len : largo del numero a convertir
-* @return long : numero convertido
+* @param string : arreglo de bytes.
+* @param pos : posicion del número a convertir en el arreglo.
+* @param len : largo en bytes del numero a convertir.
+* @return long : numero convertido.
 */
 long sletol(const uchar *string, size_t pos, size_t len){
 	long entero = 0,
@@ -62,7 +62,7 @@ long sletol(const uchar *string, size_t pos, size_t len){
 
 /**
 * @brief Convierte un decimal expresado en Estándar IEEE 754 a float.
-* @param entero : Un numero en decimal expresado según el estándar IEEE.
+* @param entero : Un numero decimal expresado en Estándar IEEE 754.
 * @return Un double.
 */
 
