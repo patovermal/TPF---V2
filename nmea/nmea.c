@@ -238,11 +238,8 @@ bool verify_checksum ( char* str_origen ){
 	if ( *temp != '\0' && *temp != '\n'  && *temp != '\r' ){		/*el '\r' para ser compatible con Windows (sistema usado para pruebas)*/
 		return false;
 	}
-	
-	if (char_temp == num_temp)
-		return true;
 
-	return false;
+	return (char_temp==num_temp)? true : false ;
 
 }
 
