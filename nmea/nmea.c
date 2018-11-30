@@ -252,24 +252,30 @@ bool verify_checksum ( char* str_origen ){
 status_t proc_nmea( char* cadena , nmea_t * nmea , FILE* flogs){
 	
 	status_t st;
-	status_t (*pfunc[ NMEA_CANT_TIPOS ])( nmea_t* , char* ) = { proc_rmc,  proc_zda,  proc_gga }; /*Puntero a funciones*/
+	status_t (*pfunc[])( nmea_t* , char* ) = { proc_rmc,  proc_zda,  proc_gga }; /*Puntero a funciones*/
+	char* inicio;
 	
 	if ( !cadena || !nmea )
 		return ST_ERR_PUNT_NULL;
-
-	if ( verify_checksum( cadena ) == false ){
+	
+	if ( !(inicio = strchr( cadena , NMEA_CHAR_START ) ) ){
+		print_logs ( ERR_INV_NMEA , flogs );
+		return ST_ERR_SENTENCIA_INVALIDA;
+	}
+	
+	if ( verify_checksum( inicio ) == false ){
 		print_logs(ERR_INV_CHKSUM, flogs);
 		return ST_ERR_SENTENCIA_INVALIDA;
 	}
 
-	if ( ( st = get_nmea_id( cadena , &(nmea->id) ) ) != ST_OK ){
+	if ( ( st = get_nmea_id( inicio , &(nmea->id) ) ) != ST_OK ){
 		print_logs(WARN_ID_DESC, flogs);
 		return st;
 	}
 	
 	print_logs( DB_ID_DETECT , flogs);
 	
-	if ( ( st = (*pfunc[ nmea->id ])( nmea , cadena ) ) != ST_OK ){
+	if ( ( st = (*pfunc[ nmea->id ])( nmea , inicio ) ) != ST_OK ){
 		print_logs(ERR_INV_NMEA, flogs);
 		return st;
 	}
@@ -381,7 +387,7 @@ status_t get_nmea_id ( const char *cadena , nmea_id* id ) {
 
 status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
 	
-	status_t (*pfunc[ NMEA_CANT_TIPOS ])( nmea_t* , gpx_t* ) = { rmc2gpx,  zda2gpx,  gga2gpx }; /*Arreglo de punteros a funciones*/
+	status_t (*pfunc[])( nmea_t* , gpx_t* ) = { rmc2gpx,  zda2gpx,  gga2gpx }; /*Arreglo de punteros a funciones*/
 	nmea_t* nmea;
 	char str[ NMEA_MAX_LEN ];
 	List lista;
@@ -410,7 +416,7 @@ status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
 		return ST_ERR_NOMEM;
 	}
 	
-	while ( fgets( str , NMEA_MAX_LEN , files->fin ) != NULL ){
+	while ( fgets( str , NMEA_MAX_LEN , files->fin ) ){
 		
 		if ( ( st = proc_nmea( str , nmea , files->flog ) )!= ST_OK ){
 			continue;

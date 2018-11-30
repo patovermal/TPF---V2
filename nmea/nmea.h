@@ -24,6 +24,8 @@
 
 #define NMEA_TOKEN_CHKSUM '*'
 
+#define NMEA_CHAR_START '$'
+
 #define NMEA_DELIM_CHAR ','
 #define NMEA_DELIM_CANT_MAX 30
 #define NMEA_DELIM_CANT_MIN 10
@@ -47,8 +49,8 @@
 #define NMEA_GGA_ELE_POS	9
 #define NMEA_GGA_SEP_POS	11
 
-#define MAX_CALIDAD	8
-#define MAX_SATELITES 12
+#define MAX_CALIDAD			8
+#define MAX_SATELITES 		12
 
 #define NMEA_RMC_HORA_POS	1
 #define NMEA_RMC_ST_POS	    2
