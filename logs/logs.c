@@ -15,7 +15,7 @@
 * @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
 */
 
-FILE *logs;
+FILE *flogs = NULL;
 
 status_t print_logs (log_t logs) {
     
@@ -24,7 +24,7 @@ status_t print_logs (log_t logs) {
     char * date = ctime(&now);
     
     if (!flogs)
-        return ST_ERR_PUNT_NULL;
+        flogs = stderr;
     
 	date[strlen(date) - 1] = '\0'; /* le saco el \n que tiene para que imprima todo en una linea*/
 	fprintf(flogs, "%s - " , date);
