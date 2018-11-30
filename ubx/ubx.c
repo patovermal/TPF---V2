@@ -248,8 +248,9 @@ bool get_sentence(uchar * buffer, FILE * fin){
 
 /* mueve al principio del buffer la sentencia ubicada en la posición 'pos' y completa el resto del buffer leyendo del archivo*/
 void load_buffer(uchar * buffer, size_t pos, FILE * fin){
-	int i,
-		leido;
+	int i;
+	size_t leido;
+	
 	if (!buffer || !fin)
 		return ST_ERR_PUNT_NULL;
 
