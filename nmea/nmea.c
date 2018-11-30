@@ -387,7 +387,7 @@ status_t get_nmea_id ( const char *cadena , nmea_id* id ) {
 * @return status_t : el estado en el que termina la funcion (ST_OK si esta bien)
 */
 
-status_t freadprint_nmea2gpx( Files_t* files , size_t maxlen ){
+status_t nmea2gpx( Files_t* files , size_t maxlen ){
 	
 	status_t (*pfunc[])( nmea_t* , gpx_t* ) = { rmc2gpx,  zda2gpx,  gga2gpx }; /*Arreglo de punteros a funciones*/
 	nmea_t* nmea;
