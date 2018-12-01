@@ -10,7 +10,7 @@
 /**
 * @brief Convierte de little-endian a entero sin signo.
 * @param string: arreglo de bytes sin signo.
-* @param pos: posicion del del número a convertir en el arreglo.
+* @param pos: posicion del del numero a convertir en el arreglo.
 * @param len: largo en bytes del numero a convertir.
 * @return ulong: numero convertido.
 */
@@ -31,7 +31,7 @@ ulong letol(const uchar *string, size_t pos, size_t len){
 /**
 * @brief Convierte de little-endian (magnitud y signo) a entero con signo .
 * @param string : arreglo de bytes.
-* @param pos : posicion del número a convertir en el arreglo.
+* @param pos : posicion del numero a convertir en el arreglo.
 * @param len : largo en bytes del numero a convertir.
 * @return long : numero convertido.
 */
@@ -57,19 +57,19 @@ long sletol(const uchar *string, size_t pos, size_t len){
 }
 
 /**
-* @brief Convierte un decimal expresado en Estándar IEEE 754 a float.
-* @param entero : Un numero decimal expresado en Estándar IEEE 754.
+* @brief Convierte un decimal expresado en Estandar IEEE 754 a float.
+* @param entero : Un numero decimal expresado en Estandar IEEE 754.
 * @return Un double.
 */
 
-/* convierte un decimal expresado en Estándar IEEE 754 a float */
+/* convierte un decimal expresado en Estandar IEEE 754 a float */
 double lotof(ulong entero){
 	int i,
 		signo = 0,
 		exponente = 0,
 		mantisa_int = 0;
 	double decimal,
-		   mantisa_double = 1;/*se inicializa con el bit implícito*/
+		   mantisa_double = 1;/*se inicializa con el bit implicito*/
 
     /* lee el signo */
 	signo = (entero & LOTOF_MASK_SIGNO) >> SHIFT_SIGNO;
