@@ -11,7 +11,7 @@
 * @brief Pasar de una cadena hhmmss.ss a hora_t
 * @param cadena : cadena hhmmss.ss
 * @param hora : puntero a hora_t
-* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
 
 status_t str2hora(char* cadena, hora_t* hora){
@@ -47,7 +47,7 @@ status_t str2hora(char* cadena, hora_t* hora){
 * @brief Pasar de una cadena yyyymmdd a hora_t
 * @param cadfecha : cadena yyyymmdd
 * @param fecha : puntero a hora_t
-* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
 
 status_t str2fecha(char* cadfecha, fecha_t * fecha){
@@ -65,7 +65,7 @@ status_t str2fecha(char* cadfecha, fecha_t * fecha){
 
 	fecha->year = ntemp/10000;
 
-	ntemp -= fecha->year*10000; 	/*saco el año, queda ntemp = mmdd*/
+	ntemp -= fecha->year*10000; 	/*saco el anio, queda ntemp = mmdd*/
 
 	if ( (fecha->month = ntemp/100) > 12 || fecha->month < 1) 	/*me fijo que sea un dia valido entre 1 y 12*/
 		return ST_ERR_FECHA_INVALIDA;
@@ -83,7 +83,7 @@ status_t str2fecha(char* cadfecha, fecha_t * fecha){
 * @brief Pone la fecha y hora actual en un fecha_t y hora_t
 * @param fecha: puntero a fecha_t
 * @param hora: puntero a hora_t
-* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
 
 status_t get_currentdate(fecha_t* fecha, hora_t* hora){
