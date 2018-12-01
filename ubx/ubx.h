@@ -4,13 +4,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
-#include "bits.h"
-#include "status.h"
-#include "fecha.h"
-#include "gpx.h"
-#include "files.h"
-#include "list.h"
-#include "logs.h"
+#include "../bits/bits.h"
+#include "../status/status.h"
+#include "../fecha/fecha.h"
+#include "../gpx/gpx.h"
+#include "../files/files.h"
+#include "../list/list.h"
+#include "../logs/logs.h"
 
 #define BUFFER_LEN 110 /*La longitud del buffer debe ser mayor a la maxima longitud posible para una sentencia UBX*/
 
@@ -30,11 +30,13 @@
 #define UBX_TIM_TOS_ID			0X120d /*little-endian*/
 #define UBX_NAV_POSLLH_ID 		0X0201 /*little-endian*/
 
+#define UBX_INT_SCALE		0.0000001
+
 /*macros para procesar el payload PVT*/
 #define UBX_PVT_GNS_FIX_OK_MASK	1
 #define UBX_PVT_GNS_FIX_OK_POS	21
 #define UBX_PVT_GNS_FIX_OK_SHIFT 0
-#define UBX_PVT_ELEVACION_POS	32
+#define UBX_PVT_ELEVACION_POS	36
 #define UBX_PVT_ELEVACION_LEN	4
 #define UBX_PVT_LATITUD_POS 	28
 #define UBX_PVT_LATITUD_LEN 	4
@@ -68,7 +70,7 @@
 #define UBX_TIM_TOS_SS_LEN		1
 
 /*macros para procesar el payload NAV_POSLLH*/
-#define UBX_NAV_POSLLH_ELEVACION_POS 	12
+#define UBX_NAV_POSLLH_ELEVACION_POS 	16
 #define UBX_NAV_POSLLH_ELEVACION_LEN 	4
 #define UBX_NAV_POSLLH_LATITUD_POS		8
 #define UBX_NAV_POSLLH_LATITUD_LEN		4
