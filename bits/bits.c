@@ -71,17 +71,13 @@ double lotof(ulong entero){
 	int i,
 		signo = 0,
 		exponente = 0,
-		mantisa_int = 0; 
+		mantisa_int = 0;
 	double decimal,
 		   mantisa_double = 1;/*se inicializa con el bit implícito*/
 
-	/* lee el signo */
+    /* lee el signo */
 	signo = (entero & LOTOF_MASK_SIGNO) >> SHIFT_SIGNO;
-	if(signo==1){
-		signo = -1;
-	}else{
-		signo = 1;
-	}		
+    	signo = ( signo == 1 ) ? -1 : 1;
 
 	/*lee el exponente*/
 	exponente = (entero & MASK_EXPONENTE) >> SHIFT_EXPONENTE;
@@ -93,7 +89,7 @@ double lotof(ulong entero){
 		if((mantisa_int>>(22-i))&1)
 			mantisa_double += ldexp(1, -i - 1);
 	}
-	
+
 	/*calcula el valor en punto flotante */
 	decimal = signo * ldexp(mantisa_double, exponente);
 
