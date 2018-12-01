@@ -77,7 +77,7 @@ double lotof(ulong entero){
 
 	/* lee el signo */
 	signo = (entero & LOTOF_MASK_SIGNO) >> SHIFT_SIGNO;
-	(signo==1)? -1 : 1;		
+	(signo==1)? signo=-1 : signo = 1;		
 
 	/*lee el exponente*/
 	exponente = (entero & MASK_EXPONENTE) >> SHIFT_EXPONENTE;
