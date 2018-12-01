@@ -13,6 +13,9 @@
 #define MASK_BIT_IMPLICITO	0x80000000
 #define SHIFT_BYTE 			8
 
+typedef unsigned long ulong;
+typedef unsigned char uchar;
+
 ulong letol(const uchar * string, size_t pos, size_t len);
 long sletol(const uchar *string, size_t pos, size_t len);
 double lotof(ulong entero);
