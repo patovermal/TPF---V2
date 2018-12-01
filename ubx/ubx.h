@@ -12,7 +12,7 @@
 #include "list.h"
 #include "logs.h"
 
-#define BUFFER_LEN 110 /*La longitúd del buffer debe ser mayor a la máxima longitud posible para una sentencia UBX*/
+#define BUFFER_LEN 110 /*La longitud del buffer debe ser mayor a la maxima longitud posible para una sentencia UBX*/
 
 /*valores fijos de sentencias UBX*/
 #define SYNC_CHAR1 			0xB5
