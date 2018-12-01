@@ -11,7 +11,7 @@
 * @brief imprime en formato gpx los datos leidos en formato ubx 
 * @param files: estructura que contiene punteros a los flujos de entrada, salida y log
 * @param maxlen: puntero a estructura gpx
-* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
 status_t ubx2gpx( Files_t * files, size_t maxlen){
 	
@@ -127,7 +127,7 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 * @brief Carga en una estructura gpx_t los datos de una sentencia pvt 
 * @param ubx: puntero a estructura ubx
 * @param gpx: puntero a estructura gpx
-* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
 status_t pvt2gpx( ubx_t * ubx, gpx_t * gpx){
 
@@ -148,9 +148,9 @@ status_t pvt2gpx( ubx_t * ubx, gpx_t * gpx){
 * @brief Carga en una estructura gpx_t los datos de una sentencia posllh 
 * @param ubx: puntero a estructura ubx
 * @param gpx: puntero a estructura gpx
-* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
-status_t tos2gpx( ubx_t* ubx , gpx_t* gpx){/*se utilizaba en una implementación anterior y se conserva en caso de ser necesaria en futuras implementaciones*/
+status_t tos2gpx( ubx_t* ubx , gpx_t* gpx){/*se utilizaba en una implementacion anterior y se conserva en caso de ser necesaria en futuras implementaciones*/
 
 	
 	if ( !ubx || !gpx )
@@ -169,7 +169,7 @@ status_t tos2gpx( ubx_t* ubx , gpx_t* gpx){/*se utilizaba en una implementación
 * @brief Carga en una estructura gpx_t los datos de una sentencia posllh 
 * @param ubx: puntero a estructura ubx
 * @param gpx: puntero a estructura gpx
-* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
 status_t posllh2gpx( ubx_t* ubx , gpx_t* gpx){
 
@@ -190,7 +190,7 @@ status_t posllh2gpx( ubx_t* ubx , gpx_t* gpx){
 * @brief Cargar en una estructura los datos de de una sentencia UBX a partir de un arreglo de bytes
 * @param sentencia: arreglo del que se lee la sentencia
 * @param ubx: puntero a estructura ubx
-* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
 status_t proc_ubx(uchar * sentencia, ubx_t * ubx){
 	proc_ubx_t funcion[] = {&proc_nav_pvt, &proc_tim_tos, &proc_nav_posllh};
@@ -225,7 +225,7 @@ status_t proc_ubx(uchar * sentencia, ubx_t * ubx){
 * @brief Cargar en una estructura los datos de  UBX_NAV_PVT a partir de un arreglo de bytes
 * @param payload: arreglo del que se lee el payload
 * @param ubx: puntero a estructura ubx
-* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
 status_t proc_nav_pvt(const uchar * payload, ubx_t * ubx){
 	if(!payload || !ubx){
@@ -258,7 +258,7 @@ status_t proc_nav_pvt(const uchar * payload, ubx_t * ubx){
 * @brief Cargar en una estructura los datos de UBX_TIM_TOS a partir de un arreglo de bytes
 * @param payload: arreglo del que se lee el payload
 * @param ubx: puntero a estructura ubx
-* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
 status_t proc_tim_tos(const uchar * payload, ubx_t * ubx){
 	if(!payload || !ubx){
@@ -283,7 +283,7 @@ status_t proc_tim_tos(const uchar * payload, ubx_t * ubx){
 * @brief Cargar en una estructura los datos de UBX_NAV_POSLLH a partir de un arreglo de bytes
 * @param payload: arreglo del que se lee el payload
 * @param ubx: puntero a estructura ubx
-* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
 status_t proc_nav_posllh(const uchar * payload, ubx_t * ubx){
 	if(!payload || !ubx){
@@ -305,7 +305,7 @@ status_t proc_nav_posllh(const uchar * payload, ubx_t * ubx){
 * @param fin: flujo de entrada
 * @return status_t: estado en que termino la funcion
 */
-/*Si el archivo tiene una sentencia UBX la función la carga en el buffer y devuelve un puntero "sentencia" al principio de la misma (no incluye los caracteres de sincronismo). Cuando el archivo se termina y no se encontraron sentencias devuelve eof=true y sentencia=NULL*/
+/*Si el archivo tiene una sentencia UBX la funcion la carga en el buffer y devuelve un puntero "sentencia" al principio de la misma (no incluye los caracteres de sincronismo). Cuando el archivo se termina y no se encontraron sentencias devuelve eof=true y sentencia=NULL*/
 status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin){
 	static uchar buffer[BUFFER_LEN];
 	 static bool buffer_empty = true;
@@ -318,12 +318,12 @@ status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin){
 
 	/*carga inicial del buffer*/
 	if(buffer_empty){
-		size_t leido; /*se declara variables dentro del if porque solo son necesarias la primera vez que se llama a la función*/
+		size_t leido; /*se declara variables dentro del if porque solo son necesarias la primera vez que se llama a la funcion*/
 	 	int i;
 
 		leido = fread_grind(buffer, 1, BUFFER_LEN, fin);
 
-		/*completa el final del buffer con ceros si no hay más datos para leer del archivo*/
+		/*completa el final del buffer con ceros si no hay mas datos para leer del archivo*/
 		if(feof(fin)){
 			for(i = leido ; i < BUFFER_LEN ; i++){
 				buffer[i] = 0; 
@@ -345,7 +345,7 @@ status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin){
 		}
 	}
 	
-	/*si salió del while es porque no hay más sentencias*/
+	/*si salio del while es porque no hay mas sentencias*/
 	*sentencia = NULL;
 	*eof=true;
 	return ST_OK;
@@ -355,12 +355,12 @@ status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin){
 * @brief busca una sentencia UBX y la mueve al principio del buffer (no incluye caracteres de sincronismo)
 * @param buffer: direccion del buffer
 * @param fin: flujo de entrada
-* @return bool: true si encontró la sentencia. false si se terminó el archivo y no hay más sentencias para leer en el buffer.
+* @return bool: true si encontro la sentencia. false si se termino el archivo y no hay mas sentencias para leer en el buffer.
 */
 bool get_sentence(uchar * buffer, FILE * fin){
 	int i;
 
-	/*busca los dos caracteres de sincronismo en el buffer excepto en los dos últimos bytes*/
+	/*busca los dos caracteres de sincronismo en el buffer excepto en los dos ultimos bytes*/
 	for(i = 0 ; i < BUFFER_LEN-2 ; i++){
 		if(buffer[i] == SYNC_CHAR1){ 
 			if(buffer[i + 1] == SYNC_CHAR2){ 
@@ -373,12 +373,12 @@ bool get_sentence(uchar * buffer, FILE * fin){
 		}		
 	}
 
-	/*si salió del 'for' y se terminó el archivo es porque no hay más sentencias para leer*/
+	/*si salio del 'for' y se termino el archivo es porque no hay mas sentencias para leer*/
 	if(feof(fin))
 		return false;
 
 
-	/*si salió del 'for' y no se terminó el archivo mueve los dos últimos bytes al principio del buffer y vuelve a empezar*/
+	/*si salio del 'for' y no se termino el archivo mueve los dos ultimos bytes al principio del buffer y vuelve a empezar*/
 	load_buffer(buffer, BUFFER_LEN-2, fin);
 	return get_sentence(buffer, fin);	
 }
@@ -403,7 +403,7 @@ void load_buffer(uchar * buffer, size_t pos, FILE * fin){
 	/*sobreescribe la parte final del buffer*/
 	if((leido = fread_grind(buffer + BUFFER_LEN - pos, 1, pos, fin)) != pos){
 		
-		/*completa el final del buffer con ceros si no hay más datos para leer del archivo*/
+		/*completa el final del buffer con ceros si no hay mas datos para leer del archivo*/
 		if(feof(fin)){ 	
 			for(i = BUFFER_LEN - pos + leido ; i < BUFFER_LEN ; i++){
 				buffer[i] = 0;
@@ -416,8 +416,8 @@ void load_buffer(uchar * buffer, size_t pos, FILE * fin){
 
  /**
 * @brief lee del archivo y valida los pámetros de fread
-* @param ptr: puntero a un bloque de memoria con un tamaño minimo de size*nmemb bytes
-* @param size: tamaño en bytes de cada elemento a leer
+* @param ptr: puntero a un bloque de memoria con un tamanio minimo de size*nmemb bytes
+* @param size: tamanio en bytes de cada elemento a leer
 * @param nmemb:	cantidad de elementos a leer
 * @param steam: puntero a FILE que especifica un flujo de entrada
 * @return size_t: true si el checksum concuerda
