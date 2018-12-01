@@ -12,7 +12,7 @@
 * @brief Imprimir logs
 * @param logs : log_t tipo de log a loguear
 * @param flogs : puntero a archivo de logs
-* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
 
 FILE *flogs = NULL;
