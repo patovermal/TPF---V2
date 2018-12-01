@@ -92,4 +92,25 @@ double lotof(ulong entero){
 	return decimal;
 }
 
+/**
+* @brief Convierte de little-endian a entero con signo.
+* @param string: arreglo de bytes sin signo.
+* @param pos: posicion del del número a convertir en el arreglo.
+* @param len: largo en bytes del numero a convertir.
+* @return long: numero convertido.
+*/
 
+long msletol(const uchar *string, size_t pos, size_t len){
+	long entero = 0;
+	size_t i;
+		
+	if ( !string )
+		return 0;
+
+	/*convierte de little-endian a long*/
+	for(i = 0 ; i < len ; i++){
+		entero |= string[pos + i] << SHIFT_BYTE*i;
+	}
+	
+	return entero;
+}
