@@ -49,10 +49,11 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 	}
 
 	while(!eof){
-
+		
+		print_logs( DB_BYTES_SYNC , files->flog ) ;
 		readline_ubx(&sentencia, &eof, files->fin);
 
-		if ((st = proc_ubx(sentencia, ubx)) != ST_OK){
+		if ((st = proc_ubx(sentencia, ubx , files->flog)) != ST_OK){
 			print_logs( ERR_INV_UBX , files->flog );
 			continue;
 		}
@@ -193,7 +194,7 @@ status_t posllh2gpx( ubx_t* ubx , gpx_t* gpx){
 * @param ubx: puntero a estructura ubx
 * @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
-status_t proc_ubx(uchar * sentencia, ubx_t * ubx){
+status_t proc_ubx(uchar * sentencia, ubx_t * ubx, FILE* flog){
 	proc_ubx_t funcion[] = {&proc_nav_pvt, &proc_tim_tos, &proc_nav_posllh};
 
 	if ( !sentencia || !ubx )
@@ -203,18 +204,21 @@ status_t proc_ubx(uchar * sentencia, ubx_t * ubx){
 	switch(letol(sentencia, ID_POS, ID_LEN)){
 		case UBX_NAV_PVT_ID:
 			ubx->id = NAV_PVT;
+			print_logs( DB_ID_DETECT , flog );
 			break;
 
 		case UBX_TIM_TOS_ID:
+			print_logs( DB_ID_DETECT , flog );
 			ubx->id = TIM_TOS;
 			break;
 
 		case UBX_NAV_POSLLH_ID:
+			print_logs( DB_ID_DETECT , flog );
 			ubx->id = NAV_POSLLH;
 			break;
 
 		default:	
-			/*PRINT LOG*/
+			print_logs( WARN_ID_DESC , flog );
 			return ST_ERR_ID_INVALIDO;
 	}
 
@@ -230,7 +234,6 @@ status_t proc_ubx(uchar * sentencia, ubx_t * ubx){
 */
 status_t proc_nav_pvt(const uchar * payload, ubx_t * ubx){
 	if(!payload || !ubx){
-		/*IMPRIMIR LOG*/
 		return ST_ERR_PUNT_NULL;
 	}
 
@@ -263,7 +266,6 @@ status_t proc_nav_pvt(const uchar * payload, ubx_t * ubx){
 */
 status_t proc_tim_tos(const uchar * payload, ubx_t * ubx){
 	if(!payload || !ubx){
-		/*IMPRIMIR LOG*/
 		return ST_ERR_PUNT_NULL;
 	}
 
@@ -288,7 +290,6 @@ status_t proc_tim_tos(const uchar * payload, ubx_t * ubx){
 */
 status_t proc_nav_posllh(const uchar * payload, ubx_t * ubx){
 	if(!payload || !ubx){
-		/*IMPRIMIR LOG*/
 		return ST_ERR_PUNT_NULL;
 	}
 

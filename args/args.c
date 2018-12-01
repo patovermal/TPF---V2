@@ -79,7 +79,7 @@ status_t proc_args(int argc, char* argv[],config_t* config){
 			else if( !strcmp(argv[i],STR_MAXLEN_S)  || !strcmp(argv[i],STR_MAXLEN_L) ){
 				if ( (i+1)<argc ){
 					ntemp = strtoul( argv[i+1] , &ctemp , 10 );
-					if ( ctemp == '\0'){
+					if ( *ctemp == '\0' ){
 						config->maxlen = ntemp;
 					}
 				}

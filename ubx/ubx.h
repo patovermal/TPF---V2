@@ -1,5 +1,6 @@
 #ifndef UBX__H
 #define UBX__H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -126,7 +127,7 @@ status_t pvt2gpx( ubx_t* ubx , gpx_t* gpx);
 status_t tos2gpx( ubx_t* ubx , gpx_t* gpx);
 status_t posllh2gpx( ubx_t* ubx , gpx_t* gpx);
 
-status_t proc_ubx(uchar * sentencia, ubx_t * ubx);
+status_t proc_ubx(uchar * sentencia, ubx_t * ubx , FILE* flog);
 status_t proc_nav_posllh(const uchar * payload, ubx_t * pvt);
 status_t proc_tim_tos(const uchar * payload, ubx_t * pvt);
 status_t proc_nav_pvt(const uchar * payload, ubx_t * pvt);

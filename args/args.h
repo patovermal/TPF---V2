@@ -14,7 +14,7 @@
 #include "../status/status.h"
 
 #define MAX_NOMBRE 50
-#define MAX_LEN_DEFAULT 1
+#define MAX_LEN_DEFAULT 10
 
 #define PROTOCOL_CANT	2
 
