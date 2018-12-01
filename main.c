@@ -10,14 +10,14 @@
 #include "./help/help.h"
 #include "./logs/logs.h"
 #include "./files/files.h"
-/* #include "./ubx/ubx.h" */
+#include "./ubx/ubx.h"
 
 int main(int argc, char* argv[]){
 	
 	config_t config;
 	status_t st;
 	Files_t files;
-	status_t (*pfunc[])( Files_t * , size_t ) = { nmea2gpx , ubx2gpx }; /*Puntero a funciones*/
+	status_t (*pfunc[])( Files_t * , size_t ) = { nmea2gpx , ubx2gpx  }; /*Puntero a funciones*/
 	Gpx_mtdt metadata;
 	
 	strncpy( config.nombre , DEFAULT_NOMBRE , MAX_NOMBRE );
@@ -60,7 +60,6 @@ int main(int argc, char* argv[]){
 	}
 	else {
 		print_logs( ERR_NO_PROTOCOL , stderr );
-		return EXIT_FAILURE;
 	}
 
 	if (!strcmp( config.fout , STR_STDOUT ) || !config.bool_fout ){
