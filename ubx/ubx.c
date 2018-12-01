@@ -28,7 +28,7 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 	if (!files)
 		return ST_ERR_PUNT_NULL;
 
-	if (!files->fin || !files->fout)
+	if ( !files->fin || !files->fout || !files->flog )
 		return ST_ERR_PUNT_NULL;
 
 	srand(time(NULL));
@@ -53,6 +53,7 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 		readline_ubx(&sentencia, &eof, files->fin);
 
 		if ((st = proc_ubx(sentencia, ubx)) != ST_OK){
+			print_logs( ERR_INV_UBX , files->flog );
 			continue;
 		}
 
@@ -63,14 +64,14 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 
 				fecha_cur = ubx->type.pvt.fecha;
 				hora_cur = ubx->type.pvt.hora;
-			
+				print_logs( DB_DATE_ACT , files->flog );
 				break;
 
 			case TIM_TOS:
 				
 				fecha_cur = ubx->type.tim_tos.fecha;
 				hora_cur = ubx->type.tim_tos.hora;
-				
+				print_logs( DB_DATE_ACT , files->flog );
 				continue;
 
 			case NAV_POSLLH:
@@ -92,7 +93,7 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 		if ( ( st = funcion[ubx->id]( ubx, gpx)) != ST_OK ) {
 			free(gpx);
 			gpx = NULL;
-			print_logs( WARN_GPX_CONV, files->flog );
+			print_logs( WARN_GPX_CONV , files->flog );
 			continue;
 		}
 		
@@ -237,9 +238,9 @@ status_t proc_nav_pvt(const uchar * payload, ubx_t * ubx){
 	ubx->type.pvt.gns_fix_ok = (payload[UBX_PVT_GNS_FIX_OK_POS] & UBX_PVT_GNS_FIX_OK_MASK)>>UBX_PVT_GNS_FIX_OK_SHIFT;
 
 	/*carga el posicionamiento*/
-	ubx->type.pvt.latitud = lotof(letol(payload,UBX_PVT_LATITUD_POS ,UBX_PVT_LATITUD_LEN));
-	ubx->type.pvt.longitud = lotof(letol(payload,UBX_PVT_LONGITUD_POS ,UBX_PVT_LONGITUD_LEN));
-	ubx->type.pvt.elevacion = (int) sletol(payload, UBX_PVT_ELEVACION_POS, UBX_PVT_ELEVACION_LEN);
+	ubx->type.pvt.latitud =  UBX_INT_SCALE*msletol(payload,UBX_PVT_LATITUD_POS ,UBX_PVT_LATITUD_LEN);
+	ubx->type.pvt.longitud = UBX_INT_SCALE*msletol(payload,UBX_PVT_LONGITUD_POS ,UBX_PVT_LONGITUD_LEN);
+	ubx->type.pvt.elevacion = msletol(payload, UBX_PVT_ELEVACION_POS, UBX_PVT_ELEVACION_LEN);
 	
 	/*carga la fecha*/
 	ubx->type.pvt.fecha.year = (int) letol(payload, UBX_PVT_YEAR_POS, UBX_PVT_YEAR_LEN);
@@ -292,9 +293,9 @@ status_t proc_nav_posllh(const uchar * payload, ubx_t * ubx){
 	}
 
 	/*carga el posicionamiento*/
-	ubx->type.posllh.latitud = lotof(letol(payload, UBX_NAV_POSLLH_LATITUD_POS ,UBX_NAV_POSLLH_LATITUD_LEN));
-	ubx->type.posllh.longitud = lotof(letol(payload, UBX_NAV_POSLLH_LONGITUD_POS ,UBX_NAV_POSLLH_LONGITUD_LEN));
-	ubx->type.posllh.elevacion = (int) sletol(payload, UBX_NAV_POSLLH_ELEVACION_POS, UBX_NAV_POSLLH_ELEVACION_LEN);
+	ubx->type.posllh.latitud = UBX_INT_SCALE*msletol(payload, UBX_NAV_POSLLH_LATITUD_POS ,UBX_NAV_POSLLH_LATITUD_LEN);
+	ubx->type.posllh.longitud = UBX_INT_SCALE*msletol(letol(payload, UBX_NAV_POSLLH_LONGITUD_POS ,UBX_NAV_POSLLH_LONGITUD_LEN);
+	ubx->type.posllh.elevacion = sletol(payload, UBX_NAV_POSLLH_ELEVACION_POS, UBX_NAV_POSLLH_ELEVACION_LEN);
 
 	return ST_OK;
 }
