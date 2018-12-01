@@ -75,7 +75,7 @@ status_t Make_list(List* lista, size_t max) {
 * @brief Agrega un nodo al principio (Append left)
 * @param lista : puntero a la lista (List*)
 * @param dato : puntero al dato (void*)
-* @return status_t : el estado en el que termino la función (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termino la funcion (si fue todo bien ST_OK)
 */
 
 status_t AppendL_list( List* lista, void* dato ) {
