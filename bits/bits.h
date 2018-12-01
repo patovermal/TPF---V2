@@ -19,5 +19,6 @@ typedef unsigned char uchar;
 ulong letol(const uchar * string, size_t pos, size_t len);
 long sletol(const uchar *string, size_t pos, size_t len);
 double lotof(ulong entero);
+long msletol(const uchar *string, size_t pos, size_t len);
 
 #endif
