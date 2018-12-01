@@ -29,7 +29,7 @@ ulong letol(const uchar *string, size_t pos, size_t len){
 
 
 /**
-* @brief Convierte de little-endian a entero con signo.
+* @brief Convierte de little-endian (magnitud y signo) a entero con signo .
 * @param string : arreglo de bytes.
 * @param pos : posicion del número a convertir en el arreglo.
 * @param len : largo en bytes del numero a convertir.
