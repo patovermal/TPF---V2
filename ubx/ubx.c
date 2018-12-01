@@ -415,7 +415,7 @@ void load_buffer(uchar * buffer, size_t pos, FILE * fin){
 }
 
  /**
-* @brief lee del archivo y valida los pámetros de fread
+* @brief lee del archivo y valida los pametros de fread
 * @param ptr: puntero a un bloque de memoria con un tamanio minimo de size*nmemb bytes
 * @param size: tamanio en bytes de cada elemento a leer
 * @param nmemb:	cantidad de elementos a leer
@@ -450,7 +450,7 @@ bool checksum(const uchar *sentencia){
 	/*lee el largo*/
 	largo = letol(sentencia, LARGO_POS, LARGO_LEN);
 	
-	/*si el largo leído es mayor al espacio disponible en el buffer no se puede realizar la lectura*/
+	/*si el largo leido es mayor al espacio disponible en el buffer no se puede realizar la lectura*/
 	if(largo > BUFFER_LEN - ID_LEN - LARGO_LEN - CHECKSUM_LEN){
 		/*IMPRIMIR LOG*/
 		return false;
@@ -463,7 +463,7 @@ bool checksum(const uchar *sentencia){
 	}
 
 	/*compara el checksum calculado*/
-	return (ck_a == sentencia[i++] && ck_b == sentencia[i])? true : false; /*al finalizar el 'for' anterior la posición 'i' corresponde al primer caracter de sincronismo*/
+	return (ck_a == sentencia[i++] && ck_b == sentencia[i])? true : false; /*al finalizar el 'for' anterior la posicion 'i' corresponde al primer caracter de sincronismo*/
 }
 
 
