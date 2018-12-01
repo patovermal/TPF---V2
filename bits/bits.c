@@ -48,7 +48,7 @@ long sletol(const uchar *string, size_t pos, size_t len){
 		entero |= string[pos + i] << SHIFT_BYTE*i;
 	
 	/*lee el signo y asigna su valor a la variable signo*/
-	signo = ( string[pos + i]>>(SHIFT_BYTE-1)? -1 : 1 ;
+	signo = ( string[pos + i]>>(SHIFT_BYTE-1)? (-1) : (1) );
 
 	/*elimina el bit de signo y termina de convertir de little-endian a long*/
 	entero |= ( (string[pos + i] & ~SLETOL_MASK_SIGNO)<< (SHIFT_BYTE*(len -1)) );

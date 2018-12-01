@@ -11,8 +11,8 @@
 * @brief Pasar de una cadena ddmm.mm a latitud en grados
 * @param cad_lat: cadena ddmm.mm
 * @param indicador: cadena indicadora (norte "N" o sur "S")
-* @param latitud: puntero a double latitud, donde se guardara el valor convertido de latitud
-* @return status_t: el estado en el que termina la funcion (si fue todo bien ST_OK)
+* @param latitud: puntero a double latitud, donde se guardará el valor convertido de latitud
+* @return status_t: el estado en el que termina la función (si fue todo bien ST_OK)
 */
 
 status_t str2lat(char* cad_lat, char* indicador, double* latitud){
@@ -48,8 +48,8 @@ status_t str2lat(char* cad_lat, char* indicador, double* latitud){
 * @brief Pasar de una cadena dddmm.mm a longitud en grados
 * @param cad_lon: cadena ddmm.mm
 * @param indicador: cadena indicadora (oeste "W" o este "E")
-* @param longitud: puntero a double longitud, donde se guardara el valor convertido de longitud
-* @return status_t: el estado en el que termina la funcion (si fue todo bien ST_OK)
+* @param longitud: puntero a double longitud, donde se guardará el valor convertido de longitud
+* @return status_t: el estado en el que termina la función (si fue todo bien ST_OK)
 */
 
 status_t str2lon(char* cad_lon, char* indicador, double* longitud){

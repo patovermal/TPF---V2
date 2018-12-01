@@ -1,6 +1,7 @@
 #ifndef BIT_FX__H
 #define BIT_FX__H
 
+#include <stdlib.h>
 #include <math.h>
 
 /*mascaras y shifts*/

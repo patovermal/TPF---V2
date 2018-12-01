@@ -12,19 +12,17 @@
 * @brief Imprimir logs
 * @param logs : log_t tipo de log a loguear
 * @param flogs : puntero a archivo de logs
-* @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
 */
 
-FILE *flogs = NULL;
-
-status_t print_logs (log_t logs) {
+status_t print_logs (log_t logs, FILE *flogs) {
     
     time_t now;     
     time(&now);     
     char * date = ctime(&now);
     
     if (!flogs)
-        flogs = stderr;
+        return ST_ERR_PUNT_NULL;
     
 	date[strlen(date) - 1] = '\0'; /* le saco el \n que tiene para que imprima todo en una linea*/
 	fprintf(flogs, "%s - " , date);
@@ -46,6 +44,10 @@ status_t print_logs (log_t logs) {
 
         case ERR_INV_NMEA:
             fprintf(flogs, "%s: %s\n", MSJ_ERR_PREFIJO, MSJ_ERR_INV_NMEA);
+            break;
+			
+		case ERR_INV_UBX:
+            fprintf(flogs, "%s: %s\n", MSJ_ERR_PREFIJO, MSJ_ERR_INV_UBX);
             break;
 		
 		case ERR_GET_DATE:

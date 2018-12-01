@@ -1,6 +1,6 @@
 /**
 * @file help.c
-* @author pulpo
+* @author patovermal
 * @date 26/11/2019
 * @brief Impresion de la ayuda del programa
 */
@@ -9,7 +9,7 @@
 
 /**
 * @brief Imprime la ayuda del programa por stdout
-* @param void: no recibe parametros
+* @param void: no recibe parámetros
 * @return void : no devuelve nada
 */
 void print_help (void) {

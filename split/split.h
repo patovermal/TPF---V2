@@ -11,6 +11,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-size_t split_delim (char * cadena, char ** ptr2ptrarray, char delim);
+size_t split_delim(char * cadena, char ** ptr2ptrarray, char delim);
 
 #endif

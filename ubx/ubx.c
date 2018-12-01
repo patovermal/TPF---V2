@@ -218,7 +218,7 @@ status_t proc_ubx(uchar * sentencia, ubx_t * ubx){
 			return ST_ERR_ID_INVALIDO;
 	}
 
-	return funcion[ubx->id](sentencia[PAYLOAD_POS], ubx);
+	return funcion[ubx->id]( &sentencia[PAYLOAD_POS], ubx);
 }
 
 
@@ -294,8 +294,8 @@ status_t proc_nav_posllh(const uchar * payload, ubx_t * ubx){
 
 	/*carga el posicionamiento*/
 	ubx->type.posllh.latitud = UBX_INT_SCALE*msletol(payload, UBX_NAV_POSLLH_LATITUD_POS ,UBX_NAV_POSLLH_LATITUD_LEN);
-	ubx->type.posllh.longitud = UBX_INT_SCALE*msletol(letol(payload, UBX_NAV_POSLLH_LONGITUD_POS ,UBX_NAV_POSLLH_LONGITUD_LEN);
-	ubx->type.posllh.elevacion = sletol(payload, UBX_NAV_POSLLH_ELEVACION_POS, UBX_NAV_POSLLH_ELEVACION_LEN);
+	ubx->type.posllh.longitud = UBX_INT_SCALE*msletol(payload, UBX_NAV_POSLLH_LONGITUD_POS ,UBX_NAV_POSLLH_LONGITUD_LEN);
+	ubx->type.posllh.elevacion = msletol(payload, UBX_NAV_POSLLH_ELEVACION_POS, UBX_NAV_POSLLH_ELEVACION_LEN);
 
 	return ST_OK;
 }
@@ -466,6 +466,3 @@ bool checksum(const uchar *sentencia){
 	/*compara el checksum calculado*/
 	return (ck_a == sentencia[i++] && ck_b == sentencia[i])? true : false; /*al finalizar el 'for' anterior la posicion 'i' corresponde al primer caracter de sincronismo*/
 }
-
-
-

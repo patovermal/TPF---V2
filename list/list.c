@@ -8,7 +8,7 @@
 #include "list.h"
 
 /**
-* @brief Crea un nodo a partir del dato(con memoria dinamica)
+* @brief Crea un nodo a partir del dato(con memoria dinámica)
 * @param dato : puntero al dato (void*)
 * @return Node* : Un puntero al nodo creado, NULL si falla
 */
@@ -55,7 +55,7 @@ void Destroy_node( Node** nodo, void (*destruir)(void*) ) {
 * @brief Inicializa una lista (pone el puntero a NULL y la cantidad actual de nodos en 0)
 * @param lista : puntero a la lista (List*)
 * @param max : cantidad maxima de nodos en la lista (size_t)
-* @return status_t : el estado en el que termino la funcion (si fue todo bien ST_OK)
+* @return status_t : el estado en el que terminó la función (si fue todo bien ST_OK)
 */
 
 status_t Make_list(List* lista, size_t max) {
@@ -75,7 +75,7 @@ status_t Make_list(List* lista, size_t max) {
 * @brief Agrega un nodo al principio (Append left)
 * @param lista : puntero a la lista (List*)
 * @param dato : puntero al dato (void*)
-* @return status_t : el estado en el que termino la funcion (si fue todo bien ST_OK)
+* @return status_t : el estado en el que terminó la función (si fue todo bien ST_OK)
 */
 
 status_t AppendL_list( List* lista, void* dato ) {
@@ -104,7 +104,7 @@ status_t AppendL_list( List* lista, void* dato ) {
 * @brief Agrega un nodo al final (Append right)
 * @param lista : puntero a la lista (List*)
 * @param dato : puntero al dato (void*)
-* @return status_t : el estado en el que termino la funcion (si fue todo bien ST_OK)
+* @return status_t : el estado en el que terminó la función (si fue todo bien ST_OK)
 */
 
 status_t AppendR_list( List* lista, void* dato ) {
@@ -131,7 +131,7 @@ status_t AppendR_list( List* lista, void* dato ) {
 	
 	aux = lista->ptr;
 		
-	/*Busco el puntero que va a NULL, es decir el ultimo registro de la lista, y le agrego el gpx que me pasan*/
+	/*Busco el puntero que va a NULL, es decir el último registro de la lista, y le agrego el gpx que me pasan*/
 	while ( aux->sig ){ 
 		aux = aux->sig;
 	}
@@ -219,7 +219,7 @@ void* PopR_list( List* lista ) {
 	
 	aux = lista->ptr;
 	
-	/*Busco el puntero que va a NULL, es decir el ultimo registro de la lista, y le agrego el gpx que me pasan*/
+	/*Busco el puntero que va a NULL, es decir el último registro de la lista, y le agrego el gpx que me pasan*/
 	while ( aux->sig ){ 
 		aux = aux->sig;
 	}

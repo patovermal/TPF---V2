@@ -152,7 +152,7 @@ typedef enum nmea_id{
 /*Estructura NMEA, con los datos a guardar (contiene una union de rmc_t, zda_t, y gga_t porque pueden venir cualquiera de los 3)*/
 typedef struct nmea{
 	nmea_id	id;
-	union type {
+	union type_nmea {
    		rmc_t rmc;
    		zda_t zda;
    		gga_t gga;

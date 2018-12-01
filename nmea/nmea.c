@@ -11,7 +11,7 @@
 * @brief Cargar en una estructura los datos de ZDA a partir de una cadena
 * @param cadena: cadena ZDA
 * @param nmea: puntero a nmea_t
-* @return status_t : el estado en el que termine la funcion (si fue todo bien ST_OK)
+* @return status_t : el estado en el que terminé la función (si fue todo bien ST_OK)
 */
 
 status_t proc_zda(nmea_t* nmea, char* cadena){
@@ -26,7 +26,7 @@ status_t proc_zda(nmea_t* nmea, char* cadena){
 	if ( split_delim( cadena , cad_arr , NMEA_DELIM_CHAR ) < NMEA_DELIM_CANT_MIN )
 		return ST_ERR_SENTENCIA_INVALIDA;
 	
-	/* convierto de cadena "hhmmss.ss" al tipo hora_t (struct hora) con la funcion str2hora (fecha.h) */
+	/* convierto de cadena "hhmmss.ss" al tipo hora_t (struct hora) con la función str2hora (fecha.h) */
 	if ( str2hora( cad_arr[NMEA_ZDA_HORA_POS] , &nmea->type.zda.hora ) != ST_OK )
 		return ST_ERR_SENTENCIA_INVALIDA;
 
@@ -42,7 +42,7 @@ status_t proc_zda(nmea_t* nmea, char* cadena){
 	if ( *temp != '\0' )
 		return ST_ERR_SENTENCIA_INVALIDA;
 
-	/* idem anterior para el anio */
+	/* idem anterior para el año */
 	nmea->type.zda.fecha.year = strtoul(cad_arr[NMEA_ZDA_ANIO_POS], &temp, 10);
 	
 	if ( *temp != '\0' )
@@ -68,7 +68,7 @@ status_t proc_zda(nmea_t* nmea, char* cadena){
 * @brief Cargar en una estructura los datos de RMC a partir de una cadena
 * @param cadena: cadena RMC
 * @param nmea: puntero a nmea_t
-* @return status_t : el estado en el que termine la funcion (si fue todo bien ST_OK)
+* @return status_t : el estado en el que terminé la función (si fue todo bien ST_OK)
 */
 
 status_t proc_rmc(nmea_t* nmea, char* cadena){
@@ -128,7 +128,7 @@ status_t proc_rmc(nmea_t* nmea, char* cadena){
 * @brief Cargar en una estructura los datos de GGA a partir de una cadena
 * @param cadena: cadena GGA
 * @param nmea: puntero a nmea_t
-* @return status_t : el estado en el que termine la funcion (si fue todo bien ST_OK)
+* @return status_t : el estado en el que terminé la función (si fue todo bien ST_OK)
 */
 
 status_t proc_gga(nmea_t* nmea, char* cadena){
@@ -193,7 +193,7 @@ status_t proc_gga(nmea_t* nmea, char* cadena){
 * @return unsigned char : con el valor del cheksum
 */
 
-unsigned char checksum ( const char * sentence ){
+unsigned char checksum_nmea ( const char * sentence ){
 	
 	unsigned char sum = 0;
 	
@@ -232,13 +232,13 @@ bool verify_checksum ( char* str_origen ){
 	*temp = '\0';
 	ptr2chksum = temp + 1;
 	
-	char_temp = checksum( str_origen + 1 );
+	char_temp = checksum_nmea( str_origen + 1 );
 	num_temp = strtoul( (ptr2chksum) , &temp , 16);
 	
 	if ( *temp != '\0' && *temp != '\n'  && *temp != '\r' ){		/*el '\r' para ser compatible con Windows (sistema usado para pruebas)*/
 		return false;
 	}
-
+	
 	return (char_temp==num_temp)? true : false ;
 
 }
@@ -290,7 +290,7 @@ status_t proc_nmea( char* cadena , nmea_t * nmea , FILE* flogs){
 * @brief Modifica un gpx_t con los datos del gga_t que viene en el nmea_t
 * @param nmea : puntero al nmea_t del que se copiaran los datos del gga_t alli contenido
 * @param gpx : puntero al gpx_t donde se guardaran los datos
-* @return status_t : el estado en el que termino la funcion (ST_OK si salio bien)
+* @return status_t : el estado en el que termino la función (ST_OK si salio bien)
 */
 
 status_t gga2gpx( nmea_t* nmea , gpx_t* gpx){
@@ -310,7 +310,7 @@ status_t gga2gpx( nmea_t* nmea , gpx_t* gpx){
 * @brief Modifica un gpx_t con los datos del rmc_t que viene en el nmea_t
 * @param nmea : puntero al nmea_t del que se copiaran los datos del rmc_t alli contenido
 * @param gpx : puntero al gpx_t donde se guardaran los datos (como rmc_t no tiene datos de elevacion, le asignaremos 0)
-* @return status_t : el estado en el que termino la funcion (ST_OK si salio bien)
+* @return status_t : el estado en el que termino la función (ST_OK si salio bien)
 */
 
 status_t rmc2gpx( nmea_t* nmea , gpx_t* gpx){
@@ -330,7 +330,7 @@ status_t rmc2gpx( nmea_t* nmea , gpx_t* gpx){
 * @brief Modifica un gpx_t con los datos de fecha del zda_t que viene en el nmea_t
 * @param nmea : puntero al nmea_t del que se copiaran los datos del zda_t alli contenido
 * @param gpx : puntero al gpx_t donde se guardaran los datos (zda_t solo modifica la fecha)
-* @return status_t : el estado en el que termino la funcion (ST_OK si salio bien)
+* @return status_t : el estado en el que termino la función (ST_OK si salio bien)
 */
 
 status_t zda2gpx( nmea_t* nmea , gpx_t* gpx){
@@ -430,6 +430,7 @@ status_t nmea2gpx( Files_t* files , size_t maxlen ){
 			case ZDA:
 				fecha_cur = nmea->type.zda.fecha;
 				print_logs( DB_DATE_ACT , files->flog );
+				continue;
 				break;
 			case RMC:
 				fecha_cur = nmea->type.rmc.fecha;
@@ -438,9 +439,6 @@ status_t nmea2gpx( Files_t* files , size_t maxlen ){
 			case GGA:
 				break;
 		}
-
-		if ( nmea->id == ZDA )
-			continue;
 		
 		if (  !( gpx = (gpx_t*)calloc(1,sizeof(gpx_t)) ) ){
 			free(nmea);

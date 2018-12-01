@@ -12,7 +12,7 @@
 * @param argc : cantidad de argumentos que fueron ingresados (int)
 * @param argv : arreglo de las cadenas que fueron ingresadas (char* [])
 * @param config : puntero a config_t (config_t*)
-* @return status_t : el estado en el que termino la funcion (ST_OK si salio bien)
+* @return status_t : el estado en el que termino la función (ST_OK si salio bien)
 */
 
 status_t proc_args(int argc, char* argv[],config_t* config){
