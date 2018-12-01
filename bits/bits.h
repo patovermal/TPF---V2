@@ -3,7 +3,7 @@
 
 #include <math.h>
 
-/*máscaras y shifts*/
+/*mascaras y shifts*/
 #define LOTOF_MASK_SIGNO	0x80000000
 #define SHIFT_SIGNO			31
 #define SLETOL_MASK_SIGNO	0X80
