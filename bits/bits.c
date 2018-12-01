@@ -95,7 +95,7 @@ double lotof(ulong entero){
 /**
 * @brief Convierte de little-endian a entero con signo.
 * @param string: arreglo de bytes sin signo.
-* @param pos: posicion del del número a convertir en el arreglo.
+* @param pos: posicion del del numero a convertir en el arreglo.
 * @param len: largo en bytes del numero a convertir.
 * @return long: numero convertido.
 */
