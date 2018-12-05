@@ -20,16 +20,16 @@ void print_help (void) {
   fprintf(stdout , "%s\n", SEPARADOR_);
 
   /* help */
-  fprintf(stdout , "%s\n", CMD_HELP1);
-  fprintf(stdout , "%s\n", CMD_HELP2);
+  fprintf(stdout , "%s\n", CMD_HELP_CORTO);
+  fprintf(stdout , "%s\n", CMD_HELP_LARGO);
   fprintf(stdout , "%s\n", MSJ_CMD_EQ);
 
   fprintf(stdout , "%s%s%s\n", START_COMENT, COMENT_HELP, END_COMENT);
   fprintf(stdout , "%s\n", SEPARADOR_);
 
   /* nombre */
-  fprintf(stdout , "%s %s\n", CMD_NOMBRE1, MSJ_NOMBRE);
-  fprintf(stdout , "%s %s\n", CMD_NOMBRE2, MSJ_NOMBRE);
+  fprintf(stdout , "%s %s\n", CMD_NOMBRE_CORTO, MSJ_NOMBRE);
+  fprintf(stdout , "%s %s\n", CMD_NOMBRE_LARGO, MSJ_NOMBRE);
 
   fprintf(stdout , "%s\n", MSJ_CMD_EQ);
   fprintf(stdout , "%s %s %d\n", MSJ_FORMATO, FORMATO_NOMBRE, MAX_NOMBRE);
@@ -38,8 +38,8 @@ void print_help (void) {
   fprintf(stdout , "%s\n", SEPARADOR_);
 
   /* protocolo */
-  fprintf(stdout, "%s %s\n", CMD_PROTOCOLO_1, MSJ_PROTOCOLO);
-  fprintf(stdout, "%s %s\n", CMD_PROTOCOLO_2, MSJ_PROTOCOLO);
+  fprintf(stdout, "%s %s\n", CMD_PROTOCOLO_CORTO, MSJ_PROTOCOLO);
+  fprintf(stdout, "%s %s\n", CMD_PROTOCOLO_LARGO, MSJ_PROTOCOLO);
 
   fprintf(stdout , "%s\n", MSJ_CMD_EQ);
   fprintf(stdout , "%s %s %s %s\n", MSJ_FORMATO, FORMATO_NMEA, CHAR_BARRA, FORMATO_UBX);
@@ -47,8 +47,8 @@ void print_help (void) {
   fprintf(stdout , "%s\n", SEPARADOR_);
 
   /* archivo entrada */
-  fprintf(stdout, "%s %s\n", CMD_ARCHIVO_IN_1, MSJ_ARCHIVO_IN);
-  fprintf(stdout, "%s %s\n", CMD_ARCHIVO_IN_2, MSJ_ARCHIVO_IN);
+  fprintf(stdout, "%s %s\n", CMD_ARCHIVO_IN_CORTO, MSJ_ARCHIVO_IN);
+  fprintf(stdout, "%s %s\n", CMD_ARCHIVO_IN_LARGO, MSJ_ARCHIVO_IN);
 
   fprintf(stdout , "%s\n", MSJ_CMD_EQ);
   fprintf(stdout , "%s %s\n", MSJ_FORMATO, FORMATO_ARCHIVO_IN);
@@ -57,8 +57,8 @@ void print_help (void) {
   fprintf(stdout , "%s\n", SEPARADOR_);
 
   /* archivo salida */
-  fprintf(stdout, "%s %s\n", CMD_ARCHIVO_OUT_1, MSJ_ARCHIVO_OUT);
-  fprintf(stdout, "%s %s\n", CMD_ARCHIVO_OUT_2, MSJ_ARCHIVO_OUT);
+  fprintf(stdout, "%s %s\n", CMD_ARCHIVO_OUT_CORTO, MSJ_ARCHIVO_OUT);
+  fprintf(stdout, "%s %s\n", CMD_ARCHIVO_OUT_LARGO, MSJ_ARCHIVO_OUT);
 
   fprintf(stdout , "%s\n", MSJ_CMD_EQ);
   fprintf(stdout , "%s %s\n", MSJ_FORMATO, FORMATO_ARCHIVO_OUT);
@@ -67,8 +67,8 @@ void print_help (void) {
   fprintf(stdout , "%s\n", SEPARADOR_);
 
   /* archivo log */
-  fprintf(stdout, "%s %s\n", CMD_ARCHIVO_LOG_1, MSJ_ARCHIVO_LOG);
-  fprintf(stdout, "%s %s\n", CMD_ARCHIVO_LOG_2, MSJ_ARCHIVO_LOG);
+  fprintf(stdout, "%s %s\n", CMD_ARCHIVO_LOG_CORTO, MSJ_ARCHIVO_LOG);
+  fprintf(stdout, "%s %s\n", CMD_ARCHIVO_LOG_LARGO, MSJ_ARCHIVO_LOG);
 
   fprintf(stdout , "%s\n", MSJ_CMD_EQ);
   fprintf(stdout , "%s %s\n", MSJ_FORMATO, FORMATO_ARCHIVO_LOG);
@@ -77,8 +77,8 @@ void print_help (void) {
   fprintf(stdout , "%s\n", SEPARADOR_);
 
   /* cantidad */
-  fprintf(stdout, "%s %s\n", CMD_CANTIDAD_1, MSJ_CANTIDAD);
-  fprintf(stdout, "%s %s\n", CMD_CANTIDAD_2, MSJ_CANTIDAD);
+  fprintf(stdout, "%s %s\n", CMD_CANTIDAD_CORTO, MSJ_CANTIDAD);
+  fprintf(stdout, "%s %s\n", CMD_CANTIDAD_LARGO, MSJ_CANTIDAD);
 
   fprintf(stdout , "%s\n", MSJ_CMD_EQ);
   fprintf(stdout , "%s %s %d\n", MSJ_FORMATO, FORMATO_CANTIDAD, MAX_CANTIDAD);
