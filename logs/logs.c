@@ -135,13 +135,16 @@ status_t print_logs (log_t logs) {
             fprintf(flogs, "%s: %s\n", MSJ_DEBUG_PREFIJO, MSJ_DB_MSJ_UP);
             break;
 
-		case DB_MSJ_PRINT:
+	case DB_MSJ_PRINT:
             fprintf(flogs, "%s: %s\n", MSJ_DEBUG_PREFIJO, MSJ_DB_MSJ_PRINT);
             break;
 
-		case DB_DATE_ACT:
+	case DB_DATE_ACT:
             fprintf(flogs, "%s: %s\n", MSJ_DEBUG_PREFIJO, MSJ_DB_DATE_ACT);
             break;
+		    
+    	default:
+	    return ST_ERR_LOG_INVALIDO;
     }
 return ST_OK;
 }
