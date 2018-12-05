@@ -1,5 +1,5 @@
 /**
-* @file logs.h
+* @file bits.h
 * @author mauroarbuello
 * @date 24/11/2018
 * @brief Funciones que operan con bits.
