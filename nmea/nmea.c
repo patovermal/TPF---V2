@@ -11,7 +11,7 @@
 * @brief Cargar en una estructura los datos de ZDA a partir de una cadena
 * @param cadena: cadena ZDA
 * @param nmea: puntero a nmea_t
-* @return status_t : el estado en el que terminé la función (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
 
 status_t proc_zda(nmea_t* nmea, char* cadena){
@@ -68,7 +68,7 @@ status_t proc_zda(nmea_t* nmea, char* cadena){
 * @brief Cargar en una estructura los datos de RMC a partir de una cadena
 * @param cadena: cadena RMC
 * @param nmea: puntero a nmea_t
-* @return status_t : el estado en el que terminé la función (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
 
 status_t proc_rmc(nmea_t* nmea, char* cadena){
@@ -128,7 +128,7 @@ status_t proc_rmc(nmea_t* nmea, char* cadena){
 * @brief Cargar en una estructura los datos de GGA a partir de una cadena
 * @param cadena: cadena GGA
 * @param nmea: puntero a nmea_t
-* @return status_t : el estado en el que terminé la función (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
 
 status_t proc_gga(nmea_t* nmea, char* cadena){
@@ -248,7 +248,7 @@ bool verify_checksum ( char* str_origen ){
 * @param cadena : sentencia NMEA (char*)
 * @param nmea : puntero a nmea_t (nmea_t*)
 * @param flogs : puntero al archivo de logs
-* @return status_t : el estado en el que termino (ST_OK si todo fue bien)
+* @return status_t : el estado en el que termina (ST_OK si todo fue bien)
 */
 
 status_t proc_nmea( char* cadena , nmea_t * nmea){
@@ -290,7 +290,7 @@ status_t proc_nmea( char* cadena , nmea_t * nmea){
 * @brief Modifica un gpx_t con los datos del gga_t que viene en el nmea_t
 * @param nmea : puntero al nmea_t del que se copiaran los datos del gga_t alli contenido
 * @param gpx : puntero al gpx_t donde se guardaran los datos
-* @return status_t : el estado en el que termino la función (ST_OK si salio bien)
+* @return status_t : el estado en el que termina la funcion (ST_OK si salio bien)
 */
 
 status_t gga2gpx( nmea_t* nmea , gpx_t* gpx){
@@ -310,7 +310,7 @@ status_t gga2gpx( nmea_t* nmea , gpx_t* gpx){
 * @brief Modifica un gpx_t con los datos del rmc_t que viene en el nmea_t
 * @param nmea : puntero al nmea_t del que se copiaran los datos del rmc_t alli contenido
 * @param gpx : puntero al gpx_t donde se guardaran los datos (como rmc_t no tiene datos de elevacion, le asignaremos 0)
-* @return status_t : el estado en el que termino la función (ST_OK si salio bien)
+* @return status_t : el estado en el que termina la funcion (ST_OK si salio bien)
 */
 
 status_t rmc2gpx( nmea_t* nmea , gpx_t* gpx){
@@ -330,7 +330,7 @@ status_t rmc2gpx( nmea_t* nmea , gpx_t* gpx){
 * @brief Modifica un gpx_t con los datos de fecha del zda_t que viene en el nmea_t
 * @param nmea : puntero al nmea_t del que se copiaran los datos del zda_t alli contenido
 * @param gpx : puntero al gpx_t donde se guardaran los datos (zda_t solo modifica la fecha)
-* @return status_t : el estado en el que termino la función (ST_OK si salio bien)
+* @return status_t : el estado en el que termina la funcion (ST_OK si salio bien)
 */
 
 status_t zda2gpx( nmea_t* nmea , gpx_t* gpx){
