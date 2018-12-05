@@ -13,10 +13,10 @@ FILE *flogs = NULL;
 
 
 status_t init_logger(char * filename){
-    if(!filename){
+    if(!filename)
         return ST_ERR_PUNT_NULL;
   
-    if( !( flogs = fopen(filename ,"w" ) ) ){
+    if( !( flogs = fopen(filename ,"w" ) ) )
         flogs = stderr;       
     
     return ST_OK;
