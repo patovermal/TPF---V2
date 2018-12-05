@@ -41,39 +41,39 @@
 #define CMD_HELP2 "--help"
 
 /* nombre */
-#define CMD_NOMBRE1 "-n"
-#define CMD_NOMBRE2 "--name"
+#define CMD_NOMBRE_CORTO "-n"
+#define CMD_NOMBRE_LARGO "--name"
 #define MSJ_NOMBRE "nombre"
 
 
 /* protocolo */
-#define CMD_PROTOCOLO_1 "-p"
-#define CMD_PROTOCOLO_2 "--protocol"
+#define CMD_PROTOCOLO_CORTO "-p"
+#define CMD_PROTOCOLO_LARGO "--protocol"
 #define MSJ_PROTOCOLO "protocolo"
 #define FORMATO_NMEA "nmea"
 #define FORMATO_UBX "ubx"
 
 /* archivo entrada */
-#define CMD_ARCHIVO_IN_1 "-i"
-#define CMD_ARCHIVO_IN_2 "--infile"
+#define CMD_ARCHIVO_IN_CORTO "-i"
+#define CMD_ARCHIVO_IN_LARGO "--infile"
 #define MSJ_ARCHIVO_IN "archivo_in"
 #define FORMATO_ARCHIVO_IN "archivo_in.txt"
 
 /* archivo salida */
-#define CMD_ARCHIVO_OUT_1 "-o"
-#define CMD_ARCHIVO_OUT_2 "--outfile"
+#define CMD_ARCHIVO_OUT_CORTO "-o"
+#define CMD_ARCHIVO_OUT_LARGO "--outfile"
 #define MSJ_ARCHIVO_OUT "archivo_out"
 #define FORMATO_ARCHIVO_OUT "archivo_out.txt"
 
 /* archivo log */
-#define CMD_ARCHIVO_LOG_1 "-l"
-#define CMD_ARCHIVO_LOG_2 "-logfile"
+#define CMD_ARCHIVO_LOG_CORTO "-l"
+#define CMD_ARCHIVO_LOG_LARGO "-logfile"
 #define MSJ_ARCHIVO_LOG "archivo_log"
 #define FORMATO_ARCHIVO_LOG "archivo_logs.txt"
 
 /* cantidad */
-#define CMD_CANTIDAD_1 "-m"
-#define CMD_CANTIDAD_2 "--maxlen"
+#define CMD_CANTIDAD_CORTO "-m"
+#define CMD_CANTIDAD_LARGO "--maxlen"
 #define MSJ_CANTIDAD "cantidad"
 #define FORMATO_CANTIDAD "Maxima cantidad de mensajes a almacenar ="
 
