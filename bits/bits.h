@@ -1,3 +1,10 @@
+/**
+* @file bits.h
+* @author mauroarbuello
+* @date 24/11/2018
+* @brief Defines para bits.c
+*/
+
 #ifndef BIT_FX__H
 #define BIT_FX__H
 
