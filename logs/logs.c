@@ -28,7 +28,6 @@ void close_logger(void){
             return;
 
         fclose(flogs);
-        return;
 }
 
 /**
