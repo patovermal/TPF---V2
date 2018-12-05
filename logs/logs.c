@@ -8,12 +8,18 @@
 
 #include "logs.h"
 
+/* Declaracion de la variable global flogs, el archivo donde iran los logs */
 FILE *flogs;
 
+/**
+* @brief Abrir el archivo de logs
+* @param filename : cadena con el nombre del archivo de log (si recibe NULL asigna stderr como archivo de logs)
+* @return status_t : el estado en el que termina la función (ST_OK si termina bien)
+*/
 
 status_t init_logger(char * filename){
-    if(!filename){
-        return ST_ERR_PUNT_NULL;
+    if( !filename ){
+        flogs = stderr;
     }
 
     if( !( flogs = fopen(filename ,"w" ) ) ){
@@ -22,6 +28,12 @@ status_t init_logger(char * filename){
 
     return ST_OK;
 }
+
+/**
+* @brief Cerrar el archivo de logs
+* @param void : no recibe argumentos
+* @return void : no devuelve nada
+*/
 
 void close_logger(void){
         if(flogs == stderr || !flogs)
