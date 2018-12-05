@@ -454,7 +454,7 @@ bool checksum(const uchar *sentencia){
 	
 	/*si el largo leido es mayor al espacio disponible en el buffer no se puede realizar la lectura*/
 	if(largo > BUFFER_LEN - ID_LEN - LARGO_LEN - CHECKSUM_LEN){
-		/*IMPRIMIR LOG*/
+		/*IMPRIMIR LOG: se encontró y descartó sentencia de tamaño mayor al buffer*/
 		return false;
 	}
 
