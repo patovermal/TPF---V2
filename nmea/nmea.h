@@ -78,16 +78,16 @@
  * @brief Tipo enumerativo para la calidad del fix
  */
 /*Tipo de dato para la CALIDAD DEL FIX*/
-typedef enum calidad_t{ 
-	CAL_INVALIDO, 
-	CAL_FIX_GPS, 
-	CAL_FIX_DGPS, 
-	CAL_FIX_PPS, 
-	CAL_RTK, 
-	CAL_RTK_FLOAT, 
-	CAL_DEAD_RECK, 
-	CAL_MANUAL, 
-	CAL_SIMULATION 
+typedef enum calidad_t{
+	CAL_INVALIDO,
+	CAL_FIX_GPS,
+	CAL_FIX_DGPS,
+	CAL_FIX_PPS,
+	CAL_RTK,
+	CAL_RTK_FLOAT,
+	CAL_DEAD_RECK,
+	CAL_MANUAL,
+	CAL_SIMULATION
 }calidad_t;
 
 /**
@@ -156,7 +156,7 @@ typedef struct nmea{
    		rmc_t rmc;
    		zda_t zda;
    		gga_t gga;
-	}type;  
+	}type;
 }nmea_t;
 
 /*Prototipos*/
@@ -164,11 +164,13 @@ status_t get_nmea_id ( const char *cadena , nmea_id* id );
 status_t proc_zda( nmea_t* nmea, char* cadena );
 status_t proc_rmc( nmea_t* nmea, char* cadena );
 status_t proc_gga( nmea_t* nmea, char* cadena );
-status_t proc_nmea( char* cadena , nmea_t* nmea , FILE* flog );
+status_t proc_nmea( char* cadena , nmea_t* nmea);
 bool verify_checksum ( char* );
 status_t rmc2gpx( nmea_t* nmea , gpx_t* gpx);
 status_t zda2gpx( nmea_t* nmea , gpx_t* gpx);
 status_t gga2gpx( nmea_t* nmea , gpx_t* gpx);
 status_t nmea2gpx( Files_t* files , size_t maxlen );
+
+size_t split_delim(char * cadena, char ** ptr2ptrarray, char delim);
 
 #endif
