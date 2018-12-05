@@ -30,6 +30,7 @@ typedef enum status_t{
 			ST_ERR_MAKE_NODE,
 			ST_ERR_SENTENCIA_INVALIDA,
 			ST_ERR_ID_INVALIDO,
+			ST_ERR_LOG_INVALIDO,
 }status_t;
 
 #endif
