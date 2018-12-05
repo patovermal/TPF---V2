@@ -1,6 +1,3 @@
-#ifndef LIST__H
-#define LIST__H
-
 /**
  * @file list.h
  * Modulo de nodo y lista
@@ -11,6 +8,9 @@
  * @author buyi97
  * @date 22/11/2019
  */
+
+#ifndef LIST__H
+#define LIST__H
  
 #include <stdio.h>
 #include <stdlib.h>
@@ -39,8 +39,6 @@ typedef struct list{
 }List;
 
 /*Prototipos*/
-Node* Make_node( void* );
-void Destroy_node( Node**, void (*)(void*) );
 status_t Make_list(List* , size_t );
 status_t AppendL_list( List* , void* );
 status_t AppendR_list( List* , void* );
