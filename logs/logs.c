@@ -8,7 +8,7 @@
 
 #include "logs.h"
 
-FILE *flogs = NULL;
+FILE *flogs = stderr;
 
 
 
