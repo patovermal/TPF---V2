@@ -37,8 +37,8 @@
 
 
 /* help */
-#define CMD_HELP1 "-h"
-#define CMD_HELP2 "--help"
+#define CMD_HELP_CORTO "-h"
+#define CMD_HELP_LARGO "--help"
 
 /* nombre */
 #define CMD_NOMBRE_CORTO "-n"
