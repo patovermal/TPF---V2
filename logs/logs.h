@@ -54,33 +54,33 @@
  * @brief Tipo de dato para logs
  */
 typedef enum log_t {
-    ERR_OPEN_FILE, 
-	ERR_INV_CHKSUM, 
+    ERR_OPEN_FILE,
+	ERR_INV_CHKSUM,
 	ERR_INV_LONG_UBX,
-    ERR_INV_NMEA, 
+    ERR_INV_NMEA,
 	ERR_INV_UBX,
-	ERR_GET_DATE, 
-	ERR_NO_MEM, 
-	ERR_LIST_MAKE, 
+	ERR_GET_DATE,
+	ERR_NO_MEM,
+	ERR_LIST_MAKE,
 	ERR_LIST_APPEND,
 	ERR_NO_PROTOCOL,
 	ERR_PROC_FILE,
-	WARN_ID_DESC, 
-	WARN_FIX_INV, 
-	WARN_FULL_LIST, 
+	WARN_ID_DESC,
+	WARN_FIX_INV,
+	WARN_FULL_LIST,
 	WARN_GPX_CONV,
 	WARN_ARG_MISS,
-    DB_BYTES_SYNC, 
-	DB_ID_DETECT, 
-	DB_MSJ_DET, 
+    DB_BYTES_SYNC,
+	DB_ID_DETECT,
+	DB_MSJ_DET,
 	DB_MSJ_UP,
 	DB_MSJ_PRINT,
-	DB_DATE_ACT 
+	DB_DATE_ACT
 } log_t;
 
 /* prototipos  */
 status_t init_logger(char * filename);
-void close_logger();
-status_t print_logs (log_t logs, FILE *flogs);
+void close_logger(void);
+status_t print_logs (log_t logs);
 
 #endif
