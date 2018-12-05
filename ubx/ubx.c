@@ -85,6 +85,7 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 
 
 		if (!(gpx = (gpx_t*) calloc( 1, sizeof(gpx_t)))){
+			print_logs( ERR_NO_MEM);
 			free(ubx);
 			ubx = NULL;
 			Destroy_list(&lista, &free);
@@ -105,6 +106,7 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 			print_logs(st);
 			free(gpx);
 			gpx = NULL;
+			print_logs( WARN_FULL_LIST );
 		}
 
 		print_logs( DB_MSJ_UP );
@@ -112,12 +114,14 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 		if ( rand()%10 <= 7 ){
 			print_trkptGPX( PopL_list( &lista ) ,files->fout);
 			Destroy_firstnode( &lista, &free );
+			print_logs( DB_MSJ_PRINT );
 		}
 	}
 
 	while ( Cant_act_list( &lista)){
 		print_trkptGPX( PopL_list( &lista), files->fout);
 		Destroy_firstnode( &lista, &free);
+		print_logs( DB_MSJ_PRINT );
 	}
 
 	free(ubx);
@@ -314,7 +318,6 @@ status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin){
 
 	/*punteros no nulos*/
 	if(!sentencia || !eof || !fin){
-		/*IMPRIMIR LOG*/
 		return ST_ERR_PUNT_NULL;
 	}
 
@@ -339,11 +342,11 @@ status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin){
 	/*busca y devuelve sentencias UBX validadas hasta llegar a EOF*/
 	while(get_sentence(buffer, fin)){
 		if(checksum(buffer)){
-			/*IMPRIMIR LOG*/
+			print_logs( DB_ID_DETECT);
 			*sentencia = buffer;
 			return ST_OK;
 		}else{
-			/*IMPRIMIR LOG*/
+			print_logs( ERR_INV_CHKSUM);
 		}
 	}
 
@@ -368,6 +371,7 @@ bool get_sentence(uchar * buffer, FILE * fin){
 			if(buffer[i + 1] == SYNC_CHAR2){
 
 				/*IMPRIMIR LOG caracteres de sincronismo encontrados*/
+				print_logs( DB_ID_DETECT);
 				/*mueve la sentencia al principio del buffer*/
 				load_buffer(buffer, i + 2, fin);
 				return true;
@@ -454,7 +458,7 @@ bool checksum(const uchar *sentencia){
 
 	/*si el largo leido es mayor al espacio disponible en el buffer no se puede realizar la lectura*/
 	if(largo > BUFFER_LEN - ID_LEN - LARGO_LEN - CHECKSUM_LEN){
-		/*IMPRIMIR LOG*/
+		print_logs( ERR_INV_CHKSUM );
 		return false;
 	}
 
