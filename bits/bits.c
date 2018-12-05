@@ -71,7 +71,7 @@ double lotof(ulong entero){
 	double decimal,
 		   mantisa_double = 1;/*se inicializa con el bit implicito*/
 
-    /* lee el signo */
+    	/* lee el signo */
 	signo = (entero & LOTOF_MASK_SIGNO) >> SHIFT_SIGNO;
     	signo = ( signo == 1 ) ? -1 : 1;
 
