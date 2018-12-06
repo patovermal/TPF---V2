@@ -44,9 +44,9 @@ status_t str2hora(char* cadena, hora_t* hora){
 }
 
 /**
-* @brief Pasar de una cadena yyyymmdd a hora_t
+* @brief Pasar de una cadena yyyymmdd a fecha_t
 * @param cadfecha : cadena yyyymmdd
-* @param fecha : puntero a hora_t
+* @param fecha : puntero a fecha_t
 * @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
 */
 
@@ -60,20 +60,56 @@ status_t str2fecha(char* cadfecha, fecha_t * fecha){
 	
 	ntemp = strtoul(cadfecha,&temp,10); 	/*ntemp = yyyymmdd*/
 
-	if (*temp != '\n' && *temp != '\0')
+	if ( *temp != '\0')
 		return ST_ERR_FECHA_INVALIDA;
 
 	fecha->year = ntemp/10000;
 
 	ntemp -= fecha->year*10000; 	/*saco el año, queda ntemp = mmdd*/
 
-	if ( (fecha->month = ntemp/100) > 12 || fecha->month < 1) 	/*me fijo que sea un dia valido entre 1 y 12*/
+	if ( (fecha->month = ntemp/100) > 12 || fecha->month < 1) 	/*me fijo que sea un mes valido entre 1 y 12*/
 		return ST_ERR_FECHA_INVALIDA;
 
 	ntemp -= fecha->month*100; 		/*me saco de encima el mes, queda ntemp = dd*/
 
 	if ( (fecha->day = ntemp) > 31 || fecha->day < 1 ) /*me fijo que sea un dia valido entre 1 y 31*/
 		return ST_ERR_FECHA_INVALIDA;
+
+	return ST_OK; /*retorno un OK (todo salio bien)*/
+
+}
+
+/**
+* @brief Pasar de una cadena ddmmyy a fecha_t
+* @param cadfecha : cadena ddmmyy
+* @param fecha : puntero a fecha_t
+* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
+*/
+
+status_t str2fecha_inv(char* cadfecha, fecha_t * fecha){
+
+	char* temp;
+	long int ntemp; 	/*numero temporario donde almaceno la fecha como 20180925 (ejemplo)*/
+	
+	if ( !cadfecha || !fecha )
+		return ST_ERR_PUNT_NULL;
+	
+	ntemp = strtoul(cadfecha,&temp,10); 	/*ntemp = ddmmyy*/
+
+	if ( *temp != '\0')
+		return ST_ERR_FECHA_INVALIDA;
+
+	if ( (fecha->day = ntemp/10000) > 31 || fecha->day < 1 ) /*me fijo que sea un dia valido entre 1 y 31*/
+		return ST_ERR_FECHA_INVALIDA;
+
+	ntemp -= fecha->day*10000; 	/*saco el dia, queda ntemp = mmyy*/
+
+	if ( (fecha->month = ntemp/100) > 12 || fecha->month < 1) 	/*me fijo que sea un mes valido entre 1 y 12*/
+		return ST_ERR_FECHA_INVALIDA;
+
+	ntemp -= fecha->month*100;	/*me saco de encima el mes, queda ntemp = yy*/
+
+	fecha->year = ntemp;
 
 	return ST_OK; /*retorno un OK (todo salio bien)*/
 

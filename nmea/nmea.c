@@ -76,7 +76,6 @@ status_t proc_rmc(nmea_t* nmea, char* cadena){
 	char* cad_arr[NMEA_DELIM_CANT_MAX];
 	status_t st;
 	char* ctemp;
-	int ntemp;
 
 	if ( !cadena || !nmea )
 		return ST_ERR_PUNT_NULL;
@@ -91,7 +90,7 @@ status_t proc_rmc(nmea_t* nmea, char* cadena){
 	if ( strcmp( cad_arr[NMEA_RMC_ST_POS] , STR_RMC_ACTIVE ) == 0 )
 		nmea->type.rmc.status = true;
 	else
-		return ST_ERR_SENTENCIA_INVALIDA;
+		return ST_ERR_FIX_INVALIDO;
 
 	if ( ( st = str2lat( cad_arr[NMEA_RMC_LAT_POS], cad_arr[NMEA_RMC_LAT_POS + 1] , &nmea->type.rmc.latitud ) ) != ST_OK )
 		return st;
@@ -109,11 +108,10 @@ status_t proc_rmc(nmea_t* nmea, char* cadena){
 	if ( *ctemp != '\0' )
 		return ST_ERR_SENTENCIA_INVALIDA;
 
-	if ( ( st = str2fecha( cad_arr[NMEA_RMC_FECHA_POS] , &nmea->type.rmc.fecha ) ) != ST_OK )
+	if ( ( st = str2fecha_inv( cad_arr[NMEA_RMC_FECHA_POS] , &nmea->type.rmc.fecha ) ) != ST_OK )
 		return st;
-	ntemp = nmea->type.rmc.fecha.year;
-	nmea->type.rmc.fecha.year = nmea->type.rmc.fecha.day + EPOCH_YY_RMC;
-	nmea->type.rmc.fecha.day = ntemp;
+	
+	nmea->type.rmc.fecha.year += EPOCH_YY_RMC;
 
 	nmea->type.rmc.desv_mag = strtod( cad_arr[NMEA_RMC_DESV_POS] , &ctemp );
 
@@ -256,28 +254,39 @@ status_t proc_nmea( char* cadena , nmea_t * nmea){
 	status_t (*pfunc[])( nmea_t* , char* ) = { proc_rmc,  proc_zda,  proc_gga }; /*Puntero a funciones*/
 	char* inicio;
 
-	if ( !cadena || !nmea)
+	if ( !cadena || !nmea )
 		return ST_ERR_PUNT_NULL;
-
+	
+	print_logs( DB_BYTES_SYNC_SEARCH );
+	
 	if ( !(inicio = strchr( cadena , NMEA_CHAR_START ) ) ){
-		print_logs( ERR_INV_NMEA);
+		print_logs( ERR_INV_NMEA );
 		return ST_ERR_SENTENCIA_INVALIDA;
 	}
-
+	
+	print_logs( DB_BYTES_SYNC_OK );
+	
 	if ( verify_checksum( inicio ) == false ){
-		print_logs( ERR_INV_CHKSUM);
+		print_logs( ERR_INV_CHKSUM );
 		return ST_ERR_SENTENCIA_INVALIDA;
 	}
+	
+	print_logs( DB_VALID_CHKSUM );
 
 	if ( ( st = get_nmea_id( inicio , &(nmea->id) ) ) != ST_OK ){
 		print_logs( WARN_ID_DESC);
 		return st;
 	}
 
-	print_logs( DB_ID_DETECT);
+	print_logs( DB_ID_DETECT );
 
 	if ( ( st = (*pfunc[ nmea->id ])( nmea , inicio ) ) != ST_OK ){
-		print_logs( ERR_INV_NMEA);
+		if ( st == ST_ERR_FIX_INVALIDO ){
+			print_logs( WARN_FIX_INV );
+		}
+		else{
+			print_logs( ERR_INV_NMEA );
+		}
 		return st;
 	}
 
@@ -488,13 +497,15 @@ status_t nmea2gpx( Files_t* files , size_t maxlen ){
 		}
 
 	}
-
+	
+	print_logs( DB_EOF );
+	
 	while ( Cant_act_list( &lista ) ){
 		print_trkptGPX( PopL_list( &lista ) , files->fout );
 		Destroy_firstnode( &lista, &free );
 		print_logs( DB_MSJ_PRINT );
 	}
-
+	
 	free(nmea);
 	Destroy_list( &lista , &free );
 	return ST_OK;

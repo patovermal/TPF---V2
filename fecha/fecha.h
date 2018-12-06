@@ -37,6 +37,7 @@ typedef struct hora_t{	int hh;		/* estructura para la hora */
 /* Prototipos */
 status_t str2hora(char* cadena, hora_t* hora);
 status_t str2fecha(char* cadena, fecha_t* hora);
+status_t str2fecha_inv(char* cadfecha, fecha_t * fecha);
 status_t get_currentdate(fecha_t* fecha, hora_t* hora);
 
 #endif
