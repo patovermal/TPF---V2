@@ -107,7 +107,11 @@ status_t print_logs (log_t logs) {
 		case ERR_PROC_FILE:
 			fprintf(flogs, "%s: %s\n", MSJ_ERR_PREFIJO, MSJ_ERR_PROC_FILE);
             break;
-
+		
+		case ERR_PROC_ARGS :
+			fprintf(flogs, "%s: %s\n", MSJ_ERR_PREFIJO, MSJ_ERR_PROC_ARGS );
+            break;
+		    
         /* Warnings (WARN) */
         case WARN_ID_DESC:
             fprintf(flogs, "%s: %s\n", MSJ_WARN_PREFIJO, MSJ_WARN_ID_DESC);
