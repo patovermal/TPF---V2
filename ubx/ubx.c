@@ -24,6 +24,7 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 	gpx_t * gpx;
 	fecha_t fecha_cur;
 	hora_t hora_cur;
+	bool flag_cont=false;
 
 	if (!files)
 		return ST_ERR_PUNT_NULL;
@@ -48,8 +49,10 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 		return ST_ERR_NOMEM;
 	}
 
-	while(!eof){
-
+	while( !eof ){
+		
+		flag_cont=false;
+		
 		readline_ubx(&sentencia, &eof, files->fin);
 		
 		if ((st = proc_ubx(sentencia, ubx)) != ST_OK){
@@ -58,36 +61,41 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 			else{
 				print_logs( ERR_INV_UBX );
 			}
-			continue;
+			flag_cont = true;
 		}
 
-		print_logs( DB_MSJ_DET );
+		if ( !flag_cont ){
+			print_logs( DB_MSJ_DET );
+		}
+		if ( !flag_cont ){
+			switch ( ubx->id ){
+				case NAV_PVT:
 
-		switch ( ubx->id ){
-			case NAV_PVT:
+					fecha_cur = ubx->type.pvt.fecha;
+					hora_cur = ubx->type.pvt.hora;
+					print_logs( DB_DATE_ACT );
+					break;
 
-				fecha_cur = ubx->type.pvt.fecha;
-				hora_cur = ubx->type.pvt.hora;
-				print_logs( DB_DATE_ACT );
-				break;
+				case TIM_TOS:
 
-			case TIM_TOS:
+					fecha_cur = ubx->type.tim_tos.fecha;
+					hora_cur = ubx->type.tim_tos.hora;
+					print_logs( DB_DATE_ACT );
+					flag_cont = true;
+					break;
 
-				fecha_cur = ubx->type.tim_tos.fecha;
-				hora_cur = ubx->type.tim_tos.hora;
-				print_logs( DB_DATE_ACT );
-				continue;
+				case NAV_POSLLH:
 
-			case NAV_POSLLH:
+					break;
 
-				break;
-
-			default:
-				continue;
+				default:
+					flag_cont = true;
+					break;
+			}
 		}
 
 
-		if (!(gpx = (gpx_t*) calloc( 1, sizeof(gpx_t)))){
+		if ( !flag_cont && !(gpx = (gpx_t*) calloc( 1, sizeof(gpx_t)))){
 			print_logs( ERR_NO_MEM );
 			free(ubx);
 			ubx = NULL;
@@ -95,7 +103,7 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 	    	return ST_ERR_NOMEM;
 		}
 
-		if ( ( st = funcion[ubx->id]( ubx, gpx)) != ST_OK ) {
+		if ( !flag_cont && ( st = funcion[ubx->id]( ubx, gpx)) != ST_OK ) {
 			free(gpx);
 			gpx = NULL;
 			if ( st == ST_ERR_FIX_INVALIDO ){
@@ -104,21 +112,24 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 			else{
 				print_logs( WARN_GPX_CONV );
 			}
-			continue;
+			flag_cont = true;
+		}
+		
+		if ( !flag_cont ){
+			gpx->fecha = fecha_cur;
+			gpx->hora = hora_cur;
 		}
 
-		gpx->fecha = fecha_cur;
-		gpx->hora = hora_cur;
-
-		if ((st = AppendR_list( &lista, gpx)) != ST_OK){
+		if ( !flag_cont && (st = AppendR_list( &lista, gpx)) != ST_OK){
 			free(gpx);
 			gpx = NULL;
 			print_logs( WARN_FULL_LIST );
 		}
+		if ( !flag_cont ){
+			print_logs( DB_MSJ_UP );
+		}
 
-		print_logs( DB_MSJ_UP );
-
-		if ( rand()%10 <= 7 ){
+		if ( !flag_cont && rand()%10 <= 7 ){
 			print_trkptGPX( PopL_list( &lista ) ,files->fout);
 			Destroy_firstnode( &lista, &free );
 			print_logs( DB_MSJ_PRINT );
@@ -142,16 +153,18 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 * @param gpx: puntero a estructura gpx
 * @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
+
 status_t pvt2gpx( ubx_t * ubx, gpx_t * gpx){
 
-	if ( !ubx || !gpx )
+	if ( !ubx || !gpx ){
 		return ST_ERR_PUNT_NULL;
-
-	if(ubx->id != NAV_PVT)
+	}
+	if(ubx->id != NAV_PVT){
 		return ST_ERR_ID_INVALIDO;
-	
-	if( !ubx->type.pvt.gns_fix_ok )
+	}
+	if( !ubx->type.pvt.gns_fix_ok ){
 		return ST_ERR_FIX_INVALIDO;
+	}
 	
 	gpx->latitud = ubx->type.pvt.latitud;
 	gpx->longitud = ubx->type.pvt.longitud;
@@ -166,15 +179,17 @@ status_t pvt2gpx( ubx_t * ubx, gpx_t * gpx){
 * @param gpx: puntero a estructura gpx
 * @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
-status_t tos2gpx( ubx_t* ubx , gpx_t* gpx){/*se utilizaba en una implementacion anterior y se conserva en caso de ser necesaria en futuras implementaciones*/
+status_t tos2gpx( ubx_t* ubx , gpx_t* gpx){
+/*se utilizaba en una implementacion anterior y se conserva en caso de ser necesaria en futuras implementaciones*/
 
 
-	if ( !ubx || !gpx )
+	if ( !ubx || !gpx ){
 		return ST_ERR_PUNT_NULL;
-
-	if(ubx->id != TIM_TOS)
+	}
+	if(ubx->id != TIM_TOS){
 		return ST_ERR_ID_INVALIDO;
-
+	}
+	
 	gpx->fecha = ubx->type.tim_tos.fecha;
 	gpx->hora = ubx->type.tim_tos.hora;
 

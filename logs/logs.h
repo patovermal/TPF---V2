@@ -16,9 +16,9 @@
 #include "../status/status.h"
 
 /* prefijos */
-#define MSJ_ERR_PREFIJO "ERR"
-#define MSJ_WARN_PREFIJO "WARN"
-#define MSJ_DEBUG_PREFIJO "DEBUG"
+#define MSJ_ERR_PREFIJO "[ERR]"
+#define MSJ_WARN_PREFIJO "[WARN]"
+#define MSJ_DEBUG_PREFIJO "[DEBUG]"
 
 /* error */
 #define MSJ_ERR_OPEN_FILE 		"No se pudo abrir el archivo (puede que no exista)"

@@ -408,7 +408,8 @@ status_t nmea2gpx( Files_t* files , size_t maxlen ){
 	gpx_t* gpx;
 	fecha_t fecha_cur;
 	hora_t hora_cur;
-
+	bool flag_cont = false;
+	
 	if ( !files )
 		return ST_ERR_PUNT_NULL;
 	
@@ -433,28 +434,34 @@ status_t nmea2gpx( Files_t* files , size_t maxlen ){
 	}
 
 	while ( fgets( str, NMEA_MAX_LEN, files->fin ) ){
-
+		
+		flag_cont = false;
+		
 		if ( ( st = proc_nmea( str , nmea ) )!= ST_OK ){
-			continue;
+			flag_cont = true;
 		}
-
-		print_logs( DB_MSJ_DET );
-
-		switch ( nmea->id ){
-			case ZDA:
-				fecha_cur = nmea->type.zda.fecha;
-				print_logs( DB_DATE_ACT );
-				continue;
-				break;
-			case RMC:
-				fecha_cur = nmea->type.rmc.fecha;
-				print_logs( DB_DATE_ACT );
-				break;
-			case GGA:
-				break;
+		
+		if ( !flag_cont ){
+			print_logs( DB_MSJ_DET );
 		}
-
-		if (  !( gpx = (gpx_t*)calloc(1,sizeof(gpx_t)) ) ){
+		
+		if ( !flag_cont ){
+			switch ( nmea->id ){
+				case ZDA:
+					fecha_cur = nmea->type.zda.fecha;
+					print_logs( DB_DATE_ACT );
+					flag_cont = true;
+					break;
+				case RMC:
+					fecha_cur = nmea->type.rmc.fecha;
+					print_logs( DB_DATE_ACT );
+					break;
+				case GGA:
+					break;
+			}
+		}
+		
+		if (  !flag_cont && !( gpx = (gpx_t*)calloc(1,sizeof(gpx_t)) ) ){
 			free(nmea);
 			nmea = NULL;
 			Destroy_list( &lista , &free );
@@ -462,7 +469,7 @@ status_t nmea2gpx( Files_t* files , size_t maxlen ){
 	    	return ST_ERR_NOMEM;
 		}
 
-		if ( ( st = (*pfunc[ nmea->id ])( nmea , gpx ) ) != ST_OK ) {
+		if ( !flag_cont && ( st = (*pfunc[ nmea->id ])( nmea , gpx ) )!= ST_OK ) {
 			free(gpx);
 			gpx = NULL;
 			if ( st == ST_ERR_FIX_INVALIDO ){
@@ -471,12 +478,17 @@ status_t nmea2gpx( Files_t* files , size_t maxlen ){
 			else{
 				print_logs( WARN_GPX_CONV );
 			}
-			continue;
+			flag_cont = true;
 		}
-
-		gpx->fecha = fecha_cur;
-
-		if ( (st = AppendR_list( &lista , gpx )) != ST_OK ){
+		
+		
+		
+		if ( !flag_cont ){
+			gpx->fecha = fecha_cur;
+		}
+		
+		if ( !flag_cont && (st = AppendR_list( &lista , gpx ))!= ST_OK ){
+			fprintf(stderr,",\n");
 			if ( st == ST_ERR_LIST_FULL ){
 				print_logs( WARN_FULL_LIST );
 			}
@@ -486,11 +498,11 @@ status_t nmea2gpx( Files_t* files , size_t maxlen ){
 			free(gpx);
 			gpx = NULL;
 		}
-		else {
+		else if ( !flag_cont ) {
 			print_logs( DB_MSJ_UP );
 		}
-
-		if ( rand()%10 <= 5 ){
+		
+		if (  (!flag_cont) && (rand()%10 <= 5) ){
 			print_trkptGPX( PopL_list( &lista ) , files->fout );
 			Destroy_firstnode( &lista, &free );
 			print_logs( DB_MSJ_PRINT );
