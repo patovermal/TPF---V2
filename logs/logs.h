@@ -32,6 +32,7 @@
 #define MSJ_ERR_LIST_APPEND 	"Error al agregar elementos a la lista"
 #define MSJ_ERR_NO_PROTOCOL 	"No se indica protocolo"
 #define MSJ_ERR_PROC_FILE 		"Error al procesar el archivo"
+#define MSJ_ERR_PROC_ARGS 		"Error al procesar los argumentos en linea de comandos"
 
 /* warning */
 #define MSJ_WARN_ID_DESC 		"No se reconoce el ID"
@@ -65,6 +66,7 @@ typedef enum log_t {
 	ERR_LIST_APPEND,
 	ERR_NO_PROTOCOL,
 	ERR_PROC_FILE,
+	ERR_PROC_ARGS,
 	WARN_ID_DESC,
 	WARN_FIX_INV,
 	WARN_FULL_LIST,
