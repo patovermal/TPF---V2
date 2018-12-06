@@ -1,3 +1,10 @@
+/**
+* @file ubx.h
+* @Author mauroarbuello
+* @date 22/11/2019
+* @brief Define para UBX
+*/
+
 #ifndef UBX__H
 #define UBX__H
 

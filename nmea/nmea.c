@@ -26,7 +26,7 @@ status_t proc_zda(nmea_t* nmea, char* cadena){
 	if ( split_delim( cadena , cad_arr , NMEA_DELIM_CHAR ) < NMEA_DELIM_CANT_MIN )
 		return ST_ERR_SENTENCIA_INVALIDA;
 
-	/* convierto de cadena "hhmmss.ss" al tipo hora_t (struct hora) con la función str2hora (fecha.h) */
+	/* convierto de cadena "hhmmss.ss" al tipo hora_t (struct hora) con la funcion str2hora (fecha.h) */
 	if ( str2hora( cad_arr[NMEA_ZDA_HORA_POS] , &nmea->type.zda.hora ) != ST_OK )
 		return ST_ERR_SENTENCIA_INVALIDA;
 
@@ -42,7 +42,7 @@ status_t proc_zda(nmea_t* nmea, char* cadena){
 	if ( *temp != '\0' )
 		return ST_ERR_SENTENCIA_INVALIDA;
 
-	/* idem anterior para el año */
+	/* idem anterior para el anio */
 	nmea->type.zda.fecha.year = strtoul(cad_arr[NMEA_ZDA_ANIO_POS], &temp, 10);
 
 	if ( *temp != '\0' )

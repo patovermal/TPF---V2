@@ -14,7 +14,7 @@ FILE *flogs;
 /**
 * @brief Abrir el archivo de logs
 * @param filename : cadena con el nombre del archivo de log (si recibe NULL asigna stderr como archivo de logs)
-* @return status_t : el estado en el que termina la función (ST_OK si termina bien)
+* @return status_t : el estado en el que termina la funcion (ST_OK si termina bien)
 */
 
 status_t init_logger(char * filename){
@@ -46,7 +46,7 @@ void close_logger(void){
 * @brief Imprimir logs
 * @param logs : log_t tipo de log a loguear
 * @param flogs : puntero a archivo de logs
-* @return status_t : el estado en el que termina la función (si fue todo bien ST_OK)
+* @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
 status_t print_logs (log_t logs) {
 

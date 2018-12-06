@@ -23,7 +23,7 @@
 /* error */
 #define MSJ_ERR_OPEN_FILE 		"No se pudo abrir el archivo (puede que no exista)"
 #define MSJ_ERR_INV_CHKSUM 		"El checksum no concuerda"
-#define MSJ_ERR_INV_LONG_UBX 	"El mensaje UBX tiene un largo inválido"
+#define MSJ_ERR_INV_LONG_UBX 	"El mensaje UBX tiene un largo invalido"
 #define MSJ_ERR_INV_UBX			"Mensaje UBX mal formado"
 #define MSJ_ERR_INV_NMEA 		"Mensaje NMEA mal formado"
 #define MSJ_ERR_GET_DATE 		"Error al obtener la fecha del sistema"
@@ -37,7 +37,7 @@
 /* warning */
 #define MSJ_WARN_ID_DESC 		"No se reconoce el ID"
 #define MSJ_WARN_FIX_INV 		"Fix invalido"
-#define MSJ_WARN_FULL_LIST 		"La lista está llena"
+#define MSJ_WARN_FULL_LIST 		"La lista esta llena"
 #define MSJ_WARN_GPX_CONV 		"Problema al convertir a GPX (se descarta)"
 #define MSJ_WARN_ARG_MISS 		"Faltan argumentos"
 
