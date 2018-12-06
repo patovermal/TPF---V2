@@ -9,7 +9,7 @@
 
 /**
 * @brief imprime en formato gpx los datos leidos en formato ubx
-* @param files: estructura que contiene punteros a los flujos de entrada, salida y log
+* @param files: estructura que contiene punteros a los flujos de entrada, salida
 * @param maxlen: puntero a estructura gpx
 * @return status_t : el estado en el que termina la funcion (si fue todo bien ST_OK)
 */
@@ -28,7 +28,7 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 	if (!files)
 		return ST_ERR_PUNT_NULL;
 
-	if ( !files->fin || !files->fout || !files->flog )
+	if ( !files->fin || !files->fout )
 		return ST_ERR_PUNT_NULL;
 
 	srand(time(NULL));
@@ -50,11 +50,14 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 
 	while(!eof){
 
-		print_logs( DB_BYTES_SYNC ) ;
 		readline_ubx(&sentencia, &eof, files->fin);
-
+		
 		if ((st = proc_ubx(sentencia, ubx)) != ST_OK){
-			print_logs( ERR_INV_UBX );
+			if ( st==ST_ERR_PUNT_NULL && eof )
+				print_logs( DB_EOF );
+			else{
+				print_logs( ERR_INV_UBX );
+			}
 			continue;
 		}
 
@@ -142,7 +145,10 @@ status_t pvt2gpx( ubx_t * ubx, gpx_t * gpx){
 
 	if(ubx->id != NAV_PVT)
 		return ST_ERR_ID_INVALIDO;
-
+	
+/* 	if( !ubx->type.pvt.gns_fix_ok )
+		return ST_ERR_FIX_INVALIDO; */
+	
 	gpx->latitud = ubx->type.pvt.latitud;
 	gpx->longitud = ubx->type.pvt.longitud;
 	gpx->elevacion = ubx->type.pvt.elevacion;
@@ -342,11 +348,11 @@ status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin){
 	/*busca y devuelve sentencias UBX validadas hasta llegar a EOF*/
 	while(get_sentence(buffer, fin)){
 		if(checksum(buffer)){
-			print_logs( DB_ID_DETECT);
+			print_logs( DB_VALID_CHKSUM );
 			*sentencia = buffer;
 			return ST_OK;
 		}else{
-			print_logs( ERR_INV_CHKSUM);
+			print_logs( ERR_INV_CHKSUM );
 		}
 	}
 
@@ -364,14 +370,15 @@ status_t readline_ubx(uchar ** sentencia, bool * eof, FILE * fin){
 */
 bool get_sentence(uchar * buffer, FILE * fin){
 	int i;
-
+	
+	print_logs( DB_BYTES_SYNC_SEARCH );
+	
 	/*busca los dos caracteres de sincronismo en el buffer excepto en los dos ultimos bytes*/
 	for(i = 0 ; i < BUFFER_LEN-2 ; i++){
 		if(buffer[i] == SYNC_CHAR1){
 			if(buffer[i + 1] == SYNC_CHAR2){
 
-				/*IMPRIMIR LOG caracteres de sincronismo encontrados*/
-				print_logs( DB_ID_DETECT);
+				print_logs( DB_BYTES_SYNC_OK );
 				/*mueve la sentencia al principio del buffer*/
 				load_buffer(buffer, i + 2, fin);
 				return true;
@@ -380,7 +387,7 @@ bool get_sentence(uchar * buffer, FILE * fin){
 	}
 
 	/*si salio del 'for' y se termino el archivo es porque no hay mas sentencias para leer*/
-	if(feof(fin))
+	if( feof(fin) )
 		return false;
 
 

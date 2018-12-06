@@ -38,16 +38,19 @@
 #define MSJ_WARN_ID_DESC 		"No se reconoce el ID"
 #define MSJ_WARN_FIX_INV 		"Fix inválido"
 #define MSJ_WARN_FULL_LIST 		"La lista está llena"
-#define MSJ_WARN_GPX_CONV 		"Problema a convertir a GPX, se descarta"
+#define MSJ_WARN_GPX_CONV 		"Problema a convertir a GPX, se descarta (puede que sea un FIX INVALIDO)"
 #define MSJ_WARN_ARG_MISS 		"Faltan argumentos"
 
 /* debug */
-#define MSJ_DB_BYTES_SYNC 		"Buscando bytes de sincronismo"
+#define MSJ_DB_BYTES_SYNC_SEARCH 		"Buscando bytes de sincronismo"
 #define MSJ_DB_ID_DETECT 		"ID identificado"
 #define MSJ_DB_MSJ_DET 			"Se recolectó un mensaje"
 #define MSJ_DB_MSJ_UP 			"Se cargó un mensaje en la lista"
 #define MSJ_DB_MSJ_PRINT 		"Se imprimió un mensaje"
 #define MSJ_DB_DATE_ACT 		"Fecha de los tracks actualizada"
+#define MSJ_DB_VALID_CHKSUM 	"El checksum concuerda"
+#define MSJ_DB_BYTES_SYNC_OK	"Bytes de sincronismo encontrados"
+#define MSJ_DB_EOF				"EOF (final de archivo) alcanzado"
 
 /* defino el tipo log_t */
 /**
@@ -72,12 +75,15 @@ typedef enum log_t {
 	WARN_FULL_LIST,
 	WARN_GPX_CONV,
 	WARN_ARG_MISS,
-    DB_BYTES_SYNC,
+    DB_BYTES_SYNC_SEARCH,
 	DB_ID_DETECT,
 	DB_MSJ_DET,
 	DB_MSJ_UP,
 	DB_MSJ_PRINT,
-	DB_DATE_ACT
+	DB_DATE_ACT,
+	DB_VALID_CHKSUM,
+	DB_BYTES_SYNC_OK,
+	DB_EOF
 } log_t;
 
 /* prototipos  */

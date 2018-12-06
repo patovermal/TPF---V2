@@ -134,8 +134,8 @@ status_t print_logs (log_t logs) {
             break;
 
         /* Debug (DB) */
-        case DB_BYTES_SYNC:
-            fprintf(flogs, "%s: %s\n", MSJ_DEBUG_PREFIJO, MSJ_DB_BYTES_SYNC);
+        case DB_BYTES_SYNC_SEARCH:
+            fprintf(flogs, "%s: %s\n", MSJ_DEBUG_PREFIJO, MSJ_DB_BYTES_SYNC_SEARCH);
             break;
 
         case DB_ID_DETECT:
@@ -150,12 +150,24 @@ status_t print_logs (log_t logs) {
             fprintf(flogs, "%s: %s\n", MSJ_DEBUG_PREFIJO, MSJ_DB_MSJ_UP);
             break;
 
-	case DB_MSJ_PRINT:
+		case DB_MSJ_PRINT:
             fprintf(flogs, "%s: %s\n", MSJ_DEBUG_PREFIJO, MSJ_DB_MSJ_PRINT);
             break;
 
-	case DB_DATE_ACT:
+		case DB_DATE_ACT:
             fprintf(flogs, "%s: %s\n", MSJ_DEBUG_PREFIJO, MSJ_DB_DATE_ACT);
+            break;
+			
+		case DB_VALID_CHKSUM:
+            fprintf(flogs, "%s: %s\n", MSJ_DEBUG_PREFIJO, MSJ_DB_VALID_CHKSUM);
+            break;
+		
+		case DB_BYTES_SYNC_OK:
+            fprintf(flogs, "%s: %s\n", MSJ_DEBUG_PREFIJO, MSJ_DB_BYTES_SYNC_OK);
+            break;
+			
+		case DB_EOF:
+            fprintf(flogs, "%s: %s\n", MSJ_DEBUG_PREFIJO, MSJ_DB_EOF);
             break;
 		    
     	default:

@@ -247,7 +247,6 @@ bool verify_checksum ( char* str_origen ){
 * @brief Procesa una sentencia NMEA
 * @param cadena : sentencia NMEA (char*)
 * @param nmea : puntero a nmea_t (nmea_t*)
-* @param flogs : puntero al archivo de logs
 * @return status_t : el estado en el que termina (ST_OK si todo fue bien)
 */
 
@@ -297,7 +296,10 @@ status_t gga2gpx( nmea_t* nmea , gpx_t* gpx){
 
 	if ( !nmea || !gpx )
 		return ST_ERR_PUNT_NULL;
-
+	
+	if ( !nmea->type.gga.calidad )
+		return ST_ERR_FIX_INVALIDO;
+	
 	gpx->hora = nmea->type.gga.hora;
 	gpx->latitud = nmea->type.gga.latitud;
 	gpx->longitud = nmea->type.gga.longitud;
@@ -382,7 +384,7 @@ status_t get_nmea_id ( const char *cadena , nmea_id* id ) {
 
 /**
 * @brief Lee, procesa e imprime en formato GPX sentencias NMEA del tipo GGA,RMC,ZDA
-* @param files : puntero a Files_t, que contiene fin, fout y flog
+* @param files : puntero a Files_t, que contiene fin, fout
 * @param maxlen : maximo de nodos que puede tener la lista de mensajes gpx
 * @return status_t : el estado en el que termina la funcion (ST_OK si esta bien)
 */
@@ -400,7 +402,10 @@ status_t nmea2gpx( Files_t* files , size_t maxlen ){
 
 	if ( !files )
 		return ST_ERR_PUNT_NULL;
-
+	
+	if ( !files->fin || !files->fout )
+		return ST_ERR_PUNT_NULL;
+	
 	if ( (st = get_currentdate( &fecha_cur , &hora_cur ) ) != ST_OK ){
 		print_logs( ERR_GET_DATE);
 		return st;

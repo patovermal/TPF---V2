@@ -23,7 +23,7 @@ int main(int argc, char* argv[]){
 	strncpy( config.nombre , DEFAULT_NOMBRE , MAX_NOMBRE );
 	config.nombre[MAX_NOMBRE] = '\0';
 	
-	init_logger(NULL) ; /* inicializa a stderr como archivo de log */
+	init_logger(NULL); /* inicializa a stderr como archivo de log */
 	
 	/* proceso de argumentos por linea de comandos */
 	if ( ( st = proc_args( argc , argv , &config ) ) != ST_OK  ){
@@ -117,6 +117,19 @@ int main(int argc, char* argv[]){
 		return EXIT_FAILURE;
 	}
 	
+	if ( !config.bool_prot ){
+		print_logs( ERR_NO_PROTOCOL );
+		
+		/*cierre de archivos*/
+		if ( files.fin != stdin )
+			fclose( files.fin );
+		if ( files.fout != stdout )
+			fclose( files.fout );
+		close_logger();
+		
+		return EXIT_FAILURE;		
+	}
+	
 	/* impresion de los headers y demas del gpx */
 	print_headerGPX( files.fout );
 	print_metadataGPX( &metadata , files.fout );
@@ -127,14 +140,6 @@ int main(int argc, char* argv[]){
 
 		print_logs( ERR_PROC_FILE );
 		
-		/*cierre de archivos*/
-		if ( files.fin != stdin )
-			fclose( files.fin );
-		if ( files.fout != stdout )
-			fclose( files.fout );
-		close_logger();
-
-		return EXIT_FAILURE;
 	}
 	
 	/* impresion de los ends del gpx */

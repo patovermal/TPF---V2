@@ -19,7 +19,6 @@
 typedef struct Files{
 	FILE * fin; 
 	FILE * fout;
-	FILE * flog;
 }Files_t;
 
 #endif
