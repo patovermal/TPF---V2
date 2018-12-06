@@ -24,8 +24,8 @@
 #define MSJ_ERR_OPEN_FILE 		"No se pudo abrir el archivo (puede que no exista)"
 #define MSJ_ERR_INV_CHKSUM 		"El checksum no concuerda"
 #define MSJ_ERR_INV_LONG_UBX 	"El mensaje UBX tiene un largo inválido"
-#define MSJ_ERR_INV_UBX			"El mensaje UBX está mal formado"
-#define MSJ_ERR_INV_NMEA 		"El mensaje NMEA está mal formado"
+#define MSJ_ERR_INV_UBX			"El mensaje UBX mal formado"
+#define MSJ_ERR_INV_NMEA 		"El mensaje NMEA mal formado"
 #define MSJ_ERR_GET_DATE 		"Error al obtener la fecha del sistema"
 #define MSJ_ERR_NO_MEM 			"No hay memoria disponible"
 #define MSJ_ERR_LIST_MAKE 		"Error al crear la lista"
@@ -36,17 +36,17 @@
 
 /* warning */
 #define MSJ_WARN_ID_DESC 		"No se reconoce el ID"
-#define MSJ_WARN_FIX_INV 		"Fix inválido"
+#define MSJ_WARN_FIX_INV 		"Fix invalido"
 #define MSJ_WARN_FULL_LIST 		"La lista está llena"
-#define MSJ_WARN_GPX_CONV 		"Problema a convertir a GPX, se descarta (puede que sea un FIX INVALIDO)"
+#define MSJ_WARN_GPX_CONV 		"Problema al convertir a GPX (se descarta)"
 #define MSJ_WARN_ARG_MISS 		"Faltan argumentos"
 
 /* debug */
 #define MSJ_DB_BYTES_SYNC_SEARCH 		"Buscando bytes de sincronismo"
 #define MSJ_DB_ID_DETECT 		"ID identificado"
-#define MSJ_DB_MSJ_DET 			"Se recolectó un mensaje"
-#define MSJ_DB_MSJ_UP 			"Se cargó un mensaje en la lista"
-#define MSJ_DB_MSJ_PRINT 		"Se imprimió un mensaje"
+#define MSJ_DB_MSJ_DET 			"Se recolecta un mensaje"
+#define MSJ_DB_MSJ_UP 			"Se carga un mensaje en la lista"
+#define MSJ_DB_MSJ_PRINT 		"Se imprime un mensaje"
 #define MSJ_DB_DATE_ACT 		"Fecha de los tracks actualizada"
 #define MSJ_DB_VALID_CHKSUM 	"El checksum concuerda"
 #define MSJ_DB_BYTES_SYNC_OK	"Bytes de sincronismo encontrados"

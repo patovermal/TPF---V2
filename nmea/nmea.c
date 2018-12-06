@@ -456,7 +456,12 @@ status_t nmea2gpx( Files_t* files , size_t maxlen ){
 		if ( ( st = (*pfunc[ nmea->id ])( nmea , gpx ) ) != ST_OK ) {
 			free(gpx);
 			gpx = NULL;
-			print_logs( WARN_GPX_CONV );
+			if ( st == ST_ERR_FIX_INVALIDO ){
+				print_logs( WARN_FIX_INV );
+			}
+			else{
+				print_logs( WARN_GPX_CONV );
+			}
 			continue;
 		}
 

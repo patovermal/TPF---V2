@@ -173,5 +173,6 @@ status_t print_logs (log_t logs) {
     	default:
 	    return ST_ERR_LOG_INVALIDO;
     }
-return ST_OK;
+	
+	return ST_OK;
 }

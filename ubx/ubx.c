@@ -88,7 +88,7 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 
 
 		if (!(gpx = (gpx_t*) calloc( 1, sizeof(gpx_t)))){
-			print_logs( ERR_NO_MEM);
+			print_logs( ERR_NO_MEM );
 			free(ubx);
 			ubx = NULL;
 			Destroy_list(&lista, &free);
@@ -98,7 +98,12 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 		if ( ( st = funcion[ubx->id]( ubx, gpx)) != ST_OK ) {
 			free(gpx);
 			gpx = NULL;
-			print_logs( WARN_GPX_CONV );
+			if ( st == ST_ERR_FIX_INVALIDO ){
+				print_logs( WARN_FIX_INV );
+			}
+			else{
+				print_logs( WARN_GPX_CONV );
+			}
 			continue;
 		}
 
@@ -106,7 +111,6 @@ status_t ubx2gpx( Files_t * files, size_t maxlen){
 		gpx->hora = hora_cur;
 
 		if ((st = AppendR_list( &lista, gpx)) != ST_OK){
-			print_logs(st);
 			free(gpx);
 			gpx = NULL;
 			print_logs( WARN_FULL_LIST );
@@ -146,8 +150,8 @@ status_t pvt2gpx( ubx_t * ubx, gpx_t * gpx){
 	if(ubx->id != NAV_PVT)
 		return ST_ERR_ID_INVALIDO;
 	
-/* 	if( !ubx->type.pvt.gns_fix_ok )
-		return ST_ERR_FIX_INVALIDO; */
+	if( !ubx->type.pvt.gns_fix_ok )
+		return ST_ERR_FIX_INVALIDO;
 	
 	gpx->latitud = ubx->type.pvt.latitud;
 	gpx->longitud = ubx->type.pvt.longitud;
